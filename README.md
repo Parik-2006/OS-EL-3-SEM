@@ -1,88 +1,64 @@
 # ⚡ WDS Scheduling Engine (Weighted Dynamic Scoring)
 
-> **A Next-Generation Non-Preemptive CPU Scheduler Comparison Tool.** > Built with **Python (Flask)**, **JavaScript**, and **Chart.js**.
+> **A Next-Generation Non-Preemptive CPU Scheduler Comparison Tool.**
+> 
+> *Designed for the 2025 Era of High-Performance Computing.*
 
-![Home Page Screenshot](image_b141eb.jpg)
-
-## 📖 Overview
-The **WDS (Weighted Dynamic Scoring)** Engine is a custom CPU scheduling algorithm designed to solve the flaws of standard non-preemptive algorithms like **FCFS** (First-Come-First-Serve) and **SJF** (Shortest Job First).
-
-While FCFS suffers from the **Convoy Effect** and SJF suffers from **Starvation**, WDS uses a hybrid formula to balance **Efficiency (Speed)**, **Fairness (Aging)**, and **Urgency (Priority)** dynamically at every time step.
-
-## 🧮 The Core Algorithm
-At every time quantum, the scheduler calculates a score for every waiting process. The process with the highest score wins the CPU.
-
-$$Score = (W_{wait} \times \text{WaitTime}) + (W_{burst} \times \frac{1}{\text{BurstTime}}) + (W_{prio} \times \text{Priority})$$
-
-* **$W_{wait}$ (Aging Factor):** Prevents starvation by boosting the score of old jobs.
-* **$W_{burst}$ (Efficiency Factor):** Mimics SJF by favoring short jobs to maximize throughput.
-* **$W_{prio}$ (Urgency Factor):** Allows critical/VIP tasks to cut the line immediately.
+![Home Page Dashboard](image_b141eb.jpg)
 
 ---
 
-## 🚀 Features
+## 🎨 Visual Overview
 
-### 1. Interactive Demo Mode ("The VS Battle")
-* Runs 4 pre-built scenarios (Convoy Effect, VIP Emergency, Starvation, etc.).
-* **Smart Commentary Engine:** Explains *why* WDS made a specific choice compared to FCFS/SJF (e.g., *"FCFS wanted the slow job, but WDS picked the fast one"*).
-* **Visual Ready Queue:** A real-time timeline showing exactly who is in the CPU and who is waiting.
+### 1. The Core Dashboard
+A modern, dark-mode interface that allows users to seamlessly switch between **Demo Scenarios** and **Custom Workloads**.
 
-### 2. Custom Workload Designer
-* Input your own list of processes (Arrival Time, Burst Time, Priority).
-* Generates instant Gantt Charts and "VS Battle" logs for your custom data.
+### 2. Real-World Application Analysis
+Unlike standard simulators, WDS includes deep-dive case studies showing how the algorithm impacts modern tech like **5G, AI, and Autonomous Vehicles**.
 
-### 3. Real-World Case Studies (2025 Era)
-* Explains how WDS applies to modern tech:
-    * 🤖 **AI Training Clusters:** Handling Checkpoints vs. Epochs.
-    * 📡 **5G Edge Gateways:** Prioritizing Health Alerts over Video Streaming.
-    * 🚗 **Autonomous Vehicles:** Lidar Obstacle Detection vs. Map Downloads.
-* Includes **clickable references** to real research papers (Google Scholar/IEEE).
+![Real World Case Studies](image_b14cd1.jpg)
+
+### 3. The "VS Battle" Decision Engine
+*(Add a screenshot of your Demo Page 'VS Battle' Card here)*
+> The engine provides a visual "Head-to-Head" comparison for every CPU cycle:
+> * **Left Side:** What FCFS/SJF would have chosen (and why it failed).
+> * **Right Side:** What WDS chose (and why it won).
 
 ---
 
-## 🛠️ Installation & Usage
+## 📖 What is WDS?
+The **Weighted Dynamic Scoring** Engine is a hybrid CPU scheduler designed to solve the "Trilemma" of non-preemptive scheduling:
 
-### Prerequisites
-* Python 3.x
-* Pip
+1.  **Speed (Efficiency):** We want to finish short jobs fast (like SJF).
+2.  **Fairness (Anti-Starvation):** We want to ensure old jobs eventually run (like FCFS).
+3.  **Urgency (Priority):** We want VIP tasks to cut the line instantly.
 
-### Steps
-1.  **Clone the Repository**
-    ```bash
-    git clone [https://github.com/your-username/wds-scheduler.git](https://github.com/your-username/wds-scheduler.git)
-    cd wds-scheduler
-    ```
+### 🧮 The Logic
+At every time step, the system calculates a **Score** for every waiting process. The highest score wins.
 
-2.  **Install Dependencies**
-    ```bash
-    pip install flask
-    ```
-
-3.  **Run the Application**
-    ```bash
-    python app.py
-    ```
-
-4.  **Open in Browser**
-    Visit `http://127.0.0.1:5000` to see the dashboard.
+> **Score = (Aging × WaitTime) + (Efficiency × 1/Burst) + (Urgency × Priority)**
 
 ---
 
-## 📂 Project Structure
+## 🚀 Key Features
 
-```text
-WDS_Web_Project/
-│
-├── app.py                # Python Backend (Algorithm Logic & Routes)
-├── README.md             # Documentation
-│
-├── static/
-│   └── css/
-│       └── style.css     # Custom Styling (Dark Mode)
-│
-└── templates/
-    ├── base.html         # Master Layout (Navbar & Scripts)
-    ├── index.html        # Home Page (Landing & Case Studies)
-    ├── demo.html         # Demo Mode (Scenarios & Visuals)
-    ├── custom.html       # User Input Mode
-    └── real_world.html   # Case Study Detail Pages
+### 🚦 Visual Ready Queue
+A real-time timeline at the bottom of the screen shows exactly:
+* **🟩 Green Box:** Process currently inside the CPU.
+* **⬜ Grey Boxes:** Processes waiting in the Ready Queue.
+
+### 🧪 Interactive Scenarios
+We pre-loaded 4 "Killer Scenarios" where standard algorithms fail:
+* **Scenario 1:** The Convoy Effect (One huge job blocking tiny ones).
+* **Scenario 2:** The VIP Emergency (Critical task stuck behind a long task).
+* **Scenario 3:** Starvation Rescue (Old job being ignored).
+* **Scenario 4:** The Smart Trade-off (Balancing all factors).
+
+---
+
+## 🛠️ How to Run Locally
+
+**1. Install Dependencies**
+You only need Python and Flask.
+```bash
+pip install flask
