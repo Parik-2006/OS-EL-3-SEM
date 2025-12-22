@@ -136,10 +136,10 @@
     const scenarios = {
         1: { title: "Convoy Avoidance", data: [{pid: 1, at: 0, bt: 50, prio: 1}, {pid: 2, at: 0, bt: 2, prio: 1}, {pid: 3, at: 0, bt: 2, prio: 1}, {pid: 4, at: 0, bt: 2, prio: 1}], problem: "FCFS blindly picks the massive P1 first. The small jobs (P2, P3, P4) are stuck waiting 50s just to do 2s of work.", solution: "WDS detects the high 'Burst Score' (1/BT) of the small jobs. It acts like SJF to clear them first, drastically lowering average wait time." },
         2: { title: "VIP Emergency", data: [{pid: 1, at: 0, bt: 5, prio: 1}, {pid: 2, at: 0, bt: 10, prio: 10}, {pid: 3, at: 0, bt: 5, prio: 1}], problem: "SJF ignores the Critical P2 because it is longer (10s) than the others (5s). The VIP waits.", solution: "WDS sees P2's Priority is 10. The formula `Weight * Priority` generates a massive score that overrides the length penalty." },
-        3: { title: "Starvation Rescue", data: [{pid: 1, at: 0, bt: 20, prio: 1}, {pid: 2, at: 1, bt: 2, prio: 1}, {pid: 3, at: 3, bt: 2, prio: 1}, {pid: 4, at: 5, bt: 2, prio: 1}, {pid: 5, at: 7, bt: 2, prio: 1}], problem: "SJF keeps picking new short jobs. P1 is 'Starved' and never runs.", solution: "WDS tracks P1's Wait Time. Every second it waits, its 'Aging Score' grows. Eventually, this score beats the new jobs, forcing fairness." },
+        3: { title: "Starvation Rescue", data: [{pid: 1, at: 0, bt: 15, prio: 1}, {pid: 2, at: 0, bt: 2, prio: 1}, {pid: 3, at: 2, bt: 2, prio: 1}, {pid: 4, at: 4, bt: 2, prio: 1}, {pid: 5, at: 6, bt: 2, prio: 1}, {pid: 6, at: 8, bt: 2, prio: 1}], problem: "Short jobs keep arriving one after another. SJF will just pick the new short job every time, forcing P1 to wait forever (Starvation).", solution: "WDS lets P2, P3, and P4 run first. But by Time=6, P1 has waited 6 seconds. Its Aging Score (6s × 3.0 = 18) finally beats the Short Job Efficiency Score (15). P1 cuts in line before P5." },        
         4: { title: "Smart Trade-off", data: [{pid: 1, at: 0, bt: 12, prio: 8}, {pid: 2, at: 0, bt: 3, prio: 1}, {pid: 3, at: 0, bt: 6, prio: 5}], problem: "No standard algorithm gets this right. SJF ignores value. Priority ignores speed.", solution: "WDS calculates a balanced score. It likely picks P3 (Medium Speed + High Value) as the best compromise." }
     };
-
+// UPDATED: Everyone arrives at 0 so they fight for the CPU
     function runScenario(id) {
         let config = scenarios[id];
         document.getElementById('problemDesc').innerText = config.problem;

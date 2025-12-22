@@ -6,17 +6,14 @@
 
 ---
 
-## ⚙️ System Workflow (Visual Logic)
+## ⚙️ System Workflow (Cooperative Architecture)
+
+WDS operates in a **Cooperative Multitasking Environment**. Long tasks do not lock the CPU indefinitely; instead, they "yield" at specific checkpoints to allow the scheduler to re-evaluate urgency.
 
 ```mermaid
 graph TD;
-    Start[New Process Arrives] --> Q{Add to Ready Queue};
-    Q --> A[Calculate WDS Score];
-    A -->|Factor 1| B(Aging: Time Waiting);
-    A -->|Factor 2| C(Efficiency: 1 / Burst Time);
-    A -->|Factor 3| D(Urgency: User Priority);
-    B & C & D --> E[Final Score];
-    E --> F{Highest Score?};
-    F -->|Yes| G[Dispatch to CPU];
-    F -->|No| H[Wait & Increase Aging];
-    G --> I[Execute & Generate VS Log];
+    A[Long Task Running] -->|Reach Yield Point| B{WDS Check: Any Higher Score?};
+    B -->|No| C[Continue Long Task];
+    B -->|Yes! Critical Job Waiting| D[Context Switch];
+    D --> E[Run Critical Job];
+    E -->|Job Done| A;
