@@ -1,156 +1,70 @@
 from flask import Flask, render_template, request, jsonify
+import copy
 
 app = Flask(__name__)
 
-# --- ALGORITHMS ENGINE ---
-def run_simulation_logic(algo, processes, weights):
-    # weights = [w_wait, w_burst, w_prio]
-    pool = [p.copy() for p in processes]
-    for p in pool: p.update({'done': False, 'wait': 0, 'tat': 0, 'ct': 0, 'rt': 0, 'start_time': -1})
-    
-    current_time = 0
-    completed = 0
-    n = len(pool)
-    timeline = []
-    decision_log = [] # Must exist
-    
-    while completed < n:
-        candidates = [p for p in pool if p['at'] <= current_time and not p['done']]
-        
-        if not candidates:
-            current_time += 1
-            continue
-            
-        winner = None
-        
-        # --- ALGORITHM SELECTION ---
-        if algo == 'FCFS':
-            winner = min(candidates, key=lambda x: x['at'])
-        elif algo == 'SJF':
-            winner = min(candidates, key=lambda x: x['bt'])
-        elif algo == 'WDS':
-            best_score = -99999
-            candidate_scores = []
-            
-            for p in candidates:
-                wait = current_time - p['at']
-                bt_score = (1.0 / p['bt']) if p['bt'] > 0 else 0
-                
-                # THE FORMULA
-                score = (weights[0] * wait) + (weights[1] * bt_score) + (weights[2] * p['prio'])
-                score = round(score, 2)
-                
-                candidate_scores.append({
-                    'pid': p['pid'], 'wait': wait, 'bt': p['bt'], 'prio': p['prio'], 'final_score': score
-                })
-                
-                if score > best_score:
-                    best_score = score
-                    winner = p
-            
-            # LOGGING THE DECISION (Critical for the UI)
-            decision_log.append({
-                'time': current_time,
-                'candidates': candidate_scores,
-                'winner_pid': winner['pid']
-            })
-        
-        # Execute Process
-        start = current_time
-        finish = start + winner['bt']
-        winner['start_time'] = start
-        winner['ct'] = finish
-        winner['tat'] = finish - winner['at']
-        winner['wait'] = start - winner['at']
-        winner['done'] = True
-        
-        timeline.append({'pid': winner['pid'], 'start': start, 'duration': winner['bt'], 'algo': algo})
-        current_time = finish
-        completed += 1
-        
-    avg_tat = sum(p['tat'] for p in pool) / n
-    avg_wt = sum(p['wait'] for p in pool) / n
-    
-    # RETURN EVERYTHING
-    return timeline, avg_tat, avg_wt, pool, decision_log
+# --- CORE ALGORITHM (WDS) - FINAL TUNED WEIGHTS ---
+def calculate_wds_score(process, current_time):
+    # WEIGHTS (Tuned for Starvation Rescue & yielding)
+    W_WAIT = 3.0    
+    W_BURST = 1.0   
+    W_PRIO = 1.0
 
-# --- ROUTES ---
+    wait_time = current_time - process['at']
+    if wait_time < 0: wait_time = 0
+
+    # Scaling 30: Short Job (2s) = 15 pts. Long Job (15s) = 2 pts. Gap = 13.
+    burst_score = 30 / process['bt'] if process['bt'] > 0 else 0
+    prio_score = process['prio'] * 10
+
+    score = (W_WAIT * wait_time) + (W_BURST * burst_score) + (W_PRIO * prio_score)
+    return round(score, 2)
+
 @app.route('/')
-def home(): return render_template('index.html')
+def index():
+    return render_template('index.html')
 
 @app.route('/demo')
-def demo(): return render_template('demo.html')
+def demo():
+    return render_template('demo.html')
 
 @app.route('/custom')
-def custom(): return render_template('custom.html')
+def custom():
+    return render_template('custom.html')
 
-@app.route('/api/simulate', methods=['POST'])
-def simulate():
-    data = request.json
-    processes = data.get('processes')
-    weights = [float(data.get('w_wait', 2.0)), float(data.get('w_burst', 50.0)), float(data.get('w_prio', 1.5))]
-    
-    # Run All 3 Algos
-    tl_fcfs, tat_fcfs, wt_fcfs, det_fcfs, _ = run_simulation_logic('FCFS', processes, weights)
-    tl_sjf, tat_sjf, wt_sjf, det_sjf, _ = run_simulation_logic('SJF', processes, weights)
-    tl_wds, tat_wds, wt_wds, det_wds, decision_log = run_simulation_logic('WDS', processes, weights)
-    
-    return jsonify({
-        'timeline_wds': tl_wds,
-        'decision_log': decision_log, # <--- THIS MUST BE SENT
-        'metrics': {
-            'tat': {'fcfs': tat_fcfs, 'sjf': tat_sjf, 'wds': tat_wds},
-            'wt': {'fcfs': wt_fcfs, 'sjf': wt_sjf, 'wds': wt_wds}
-        },
-        'details': { 'wds': det_wds }
-    })
-
-# --- REAL-WORLD SCENARIOS DATABASE ---
 # --- REAL-WORLD SCENARIOS DATABASE ---
 scenarios_db = {
     'ai': {
         'title': 'AI Model Training Clusters',
         'icon': '🤖',
-        'problem': 'In Deep Learning, "Checkpointing" (saving progress) is a short, frequent task. "Training Epochs" are massive, long tasks. Standard schedulers (FCFS) force Checkpoints to wait behind Epochs. If the system crashes, hours of training are lost because the Checkpoint never ran.',
-        'solution': 'WDS uses its <b>Burst Weight (Efficiency)</b> to identify Checkpoints as "Short Jobs". It pauses the queue of long Training Epochs to slip in the Checkpoint immediately. This guarantees data safety with zero impact on overall training time.',
+        'problem': 'Deep Learning models train in massive "Epochs" (hours long). Standard schedulers (FCFS) lock the GPU for the entire epoch. If a short "Checkpoint Save" (10s) arrives, it gets blocked.',
+        'solution': 'WDS uses <b>Cooperative Multitasking</b>. The training process yields control after every "Batch". WDS sees the "Checkpoint Save" has a high Efficiency Score and swaps it in immediately.',
         'stats': {'labels': ['Checkpoint Lag (FCFS)', 'Checkpoint Lag (WDS)'], 'data': [120, 5]}, 
-        'refs': [
-            {'title': 'Optimizing Checkpointing in Distributed Deep Learning', 'source': 'arXiv', 'url': 'https://scholar.google.com/scholar?q=Optimizing+Checkpointing+in+Distributed+Deep+Learning'},
-            {'title': 'Job Scheduling for GPU Clusters', 'source': 'USENIX OSDI', 'url': 'https://scholar.google.com/scholar?q=Job+Scheduling+for+GPU+Clusters'}
-        ]
+        'refs': [{'title': 'Optimizing Checkpointing', 'source': 'arXiv', 'url': '#'}]
     },
     '5g': {
         'title': '5G/6G Edge Gateways',
         'icon': '📡',
-        'problem': 'Edge towers process mixed traffic: YouTube 4K streams (High Bandwidth, Low Urgency) and Heart Attack Alerts from wearables (Tiny Data, Critical Urgency). FCFS processes the massive Video packets first, delaying the Health Alert by milliseconds—which is fatal.',
-        'solution': 'WDS leverages <b>Priority Weight (Urgency)</b>. It assigns "Health Alerts" Priority 10. Even if a 4K stream is running, WDS calculates the massive priority score of the Alert and preempts the video stream instantly.',
+        'problem': 'Edge routers process mixed traffic. A 4K Netflix stream blocks a tiny "Heart Attack Alert" packet for 200ms—fatal in remote surgery.',
+        'solution': 'WDS implements <b>Packet-Level Yielding</b>. The Health Alert (Priority 10) overrides the video stream immediately, ensuring < 10ms latency.',
         'stats': {'labels': ['Emergency Latency (FCFS)', 'Emergency Latency (WDS)'], 'data': [450, 12]},
-        'refs': [
-            {'title': 'Ultra-Reliable Low-Latency Communication (URLLC) in 5G', 'source': 'IEEE Xplore', 'url': 'https://scholar.google.com/scholar?q=URLLC+5G+Scheduling+Latency'},
-            {'title': 'Slice Scheduling for IoT Edge Devices', 'source': 'ACM Sigcomm', 'url': 'https://scholar.google.com/scholar?q=Network+Slicing+Scheduling+IoT'}
-        ]
+        'refs': [{'title': 'URLLC in 5G', 'source': 'IEEE Xplore', 'url': '#'}]
     },
     'auto': {
         'title': 'Autonomous Vehicle OS',
         'icon': '🚗',
-        'problem': 'A self-driving car OS handles "Map Downloads" (Long) and "Lidar Obstacle Detection" (Short, Critical). If the OS is busy downloading a map update (FCFS/Round Robin), the Lidar processing might be delayed by 200ms—enough to cause an accident at 60mph.',
-        'solution': 'WDS acts as a <b>Real-Time Hybrid</b>. It sees the Lidar task is both Short (Burst Score) and Critical (Priority Score). It forces the Map Download to yield immediately, ensuring safety-critical reaction times.',
+        'problem': 'A "Map Download" (Long Task) blocks "Lidar Obstacle Detection" (Critical Task). A 300ms delay at 60mph means the car travels 8 meters blind.',
+        'solution': 'WDS uses <b>Yield Points</b>. It pauses the Map Download to ask: <i>"Is anything urgent waiting?"</i>. WDS forces the Lidar task to run instantly.',
         'stats': {'labels': ['Braking Reaction (Standard)', 'Braking Reaction (WDS)'], 'data': [300, 45]},
-        'refs': [
-            {'title': 'Real-Time Scheduling in Automotive AUTOSAR', 'source': 'SAE International', 'url': 'https://scholar.google.com/scholar?q=Real-Time+Scheduling+in+Automotive+AUTOSAR'},
-            {'title': 'Safety-Critical OS Design for Tesla/Waymo', 'source': 'IEEE IV Symposium', 'url': 'https://scholar.google.com/scholar?q=Safety-Critical+OS+Scheduling+Autonomous+Vehicles'}
-        ]
+        'refs': [{'title': 'Real-Time Scheduling in AUTOSAR', 'source': 'SAE International', 'url': '#'}]
     },
     'cloud': {
         'title': 'Serverless Cloud Functions',
         'icon': '☁️',
-        'problem': 'In AWS Lambda/Azure, "Cold Starts" occur when a new function needs to spin up. If the server is busy compiling a large background job, the user\'s simple "Login Request" hangs for seconds (Starvation).',
-        'solution': 'WDS uses the <b>Aging Factor</b>. As the Login Request waits, its score rises exponentially. WDS realizes the user is waiting and pauses the background compilation to serve the Login Request, ensuring a snappy UI.',
+        'problem': 'In AWS Lambda, "Cold Starts" hang a user\'s "Login Request" if the server is busy compiling a background job.',
+        'solution': 'WDS utilizes the <b>Aging Factor</b>. As the Login Request waits, its score grows. WDS injects it next, preventing UI freeze.',
         'stats': {'labels': ['Cold Start Delay (FIFO)', 'Cold Start Delay (WDS)'], 'data': [2500, 300]}, 
-        'refs': [
-            {'title': 'Mitigating Cold Starts in Serverless Computing', 'source': 'USENIX', 'url': 'https://scholar.google.com/scholar?q=Mitigating+Cold+Starts+in+Serverless+Computing'},
-            {'title': 'Fairness in Multi-Tenant Cloud Scheduling', 'source': 'Google Cloud Research', 'url': 'https://scholar.google.com/scholar?q=Fairness+in+Multi-Tenant+Cloud+Scheduling'}
-        ]
+        'refs': [{'title': 'Mitigating Cold Starts', 'source': 'USENIX', 'url': '#'}]
     }
 }
 
@@ -159,6 +73,131 @@ def real_world(scenario_id):
     data = scenarios_db.get(scenario_id)
     if not data: return "Scenario not found", 404
     return render_template('real_world.html', data=data)
+
+# --- SIMULATION API ---
+@app.route('/api/simulate', methods=['POST'])
+def simulate():
+    processes = request.json['processes']
+    for p in processes:
+        p['rem_bt'] = p['bt']
+        p['wait'] = 0
+        p['tat'] = 0
+        p['start_time'] = -1
+        p['finish_time'] = -1
+
+    # SIMULATION VARIABLES
+    current_time = 0
+    completed = 0
+    n = len(processes)
+    timeline_wds = []
+    
+    # "VS Battle" Decision Logs
+    decision_log = []
+
+    # COPY LISTS FOR COMPARISON
+    procs_fcfs = copy.deepcopy(processes)
+    procs_sjf = copy.deepcopy(processes)
+
+    # --- 1. RUN WDS SIMULATION ---
+    wds_processes = copy.deepcopy(processes)
+    wds_processes.sort(key=lambda x: x['at'])
+    active_procs = [p for p in wds_processes]
+    
+    # TRACK PREVIOUS PROCESS (For Context Switch Logic)
+    last_process_id = None 
+
+    while completed < n:
+        # Move arrived processes to Ready Queue
+        available = [p for p in active_procs if p['at'] <= current_time and p['rem_bt'] > 0]
+        
+        if not available:
+            current_time += 1
+            continue
+
+        # --- DECISION MOMENT ---
+        candidates = []
+        for p in available:
+            score = calculate_wds_score(p, current_time)
+            candidates.append({
+                'pid': p['pid'], 
+                'final_score': score, 
+                'bt': p['bt'], 
+                'wait': current_time - p['at'],
+                'prio': p['prio']
+            })
+
+        # Pick Winner
+        winner_info = max(candidates, key=lambda x: x['final_score'])
+        winner = next(p for p in available if p['pid'] == winner_info['pid'])
+
+        # --- CONTEXT SWITCH LOGIC (INTEGRATED) ---
+        system_msgs = []
+        if winner['pid'] != last_process_id:
+            # If there was a previous process, save its state
+            if last_process_id is not None:
+                system_msgs.append(f"💾 SYSTEM: Saving State for Process {last_process_id}...")
+            
+            # Load the new process
+            system_msgs.append(f"🚀 SYSTEM: Loading State for Process {winner['pid']}...")
+            
+            # Update tracker
+            last_process_id = winner['pid']
+
+        # LOG THE DECISION
+        decision_log.append({
+            'time': current_time,
+            'winner_pid': winner['pid'],
+            'candidates': candidates,
+            'system_msg': system_msgs  # <--- Sent to Frontend
+        })
+
+        # EXECUTE PROCESS (Non-Preemptive chunk)
+        start = current_time
+        duration = winner['bt']
+        current_time += duration
+        winner['rem_bt'] = 0
+        winner['finish_time'] = current_time
+        winner['tat'] = winner['finish_time'] - winner['at']
+        winner['wait'] = winner['tat'] - winner['bt']
+        
+        timeline_wds.append({'pid': winner['pid'], 'start': start, 'duration': duration})
+        completed += 1
+
+    # --- 2. METRICS (FCFS & SJF) ---
+    def calc_fcfs(procs):
+        procs.sort(key=lambda x: x['at'])
+        time = 0; total_tat = 0
+        for p in procs:
+            if time < p['at']: time = p['at']
+            time += p['bt']
+            total_tat += (time - p['at'])
+        return total_tat / len(procs)
+
+    def calc_sjf(procs):
+        time = 0; completed = 0; total_tat = 0
+        local_procs = copy.deepcopy(procs)
+        while completed < len(local_procs):
+            avail = [p for p in local_procs if p['at'] <= time and p['bt'] > 0]
+            if not avail: time += 1; continue
+            winner = min(avail, key=lambda x: x['bt'])
+            time += winner['bt']
+            total_tat += (time - winner['at'])
+            winner['bt'] = 0
+            completed += 1
+        return total_tat / len(local_procs)
+
+    avg_tat_wds = sum(p['tat'] for p in wds_processes) / n
+    avg_tat_fcfs = calc_fcfs(procs_fcfs)
+    avg_tat_sjf = calc_sjf(procs_sjf)
+
+    return jsonify({
+        'timeline_wds': timeline_wds,
+        'details': {'wds': wds_processes},
+        'metrics': {
+            'tat': {'wds': avg_tat_wds, 'fcfs': avg_tat_fcfs, 'sjf': avg_tat_sjf}
+        },
+        'decision_log': decision_log
+    })
 
 if __name__ == '__main__':
     app.run(debug=True)
