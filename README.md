@@ -79,3 +79,9 @@ This project is deployed on **Vercel**.
 
 ### 📄 License
 This project is for educational research purposes.
+
+## 🤝 Contributing & Issues
+This project is open for viewing. **Direct changes are restricted.**
+
+* **Found a bug?** Please [Open a New Issue](https://github.com/YOUR-USERNAME/os-el2025/issues/new) and describe the problem.
+* **Want to fix it?** Please Fork the repo and submit a Pull Request (PR) for review.
