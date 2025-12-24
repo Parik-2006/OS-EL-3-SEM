@@ -32,6 +32,11 @@ def demo():
 def custom():
     return render_template('custom.html')
 
+# --- NEW: DOCUMENTATION ROUTE ---
+@app.route('/docs')
+def docs():
+    return render_template('readme.html')
+
 # --- REAL-WORLD SCENARIOS DATABASE ---
 scenarios_db = {
     'ai': {

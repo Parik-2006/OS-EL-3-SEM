@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WDS Project Documentation</title>
+    <style>
+        /* Professional Documentation Styling */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f4f7f6; margin: 0; padding: 0; }
+        .container { max-width: 900px; margin: 40px auto; background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        
+        /* Header */
+        header { border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 30px; }
+        h1 { color: #2c3e50; font-size: 2.2rem; margin: 0; }
+        .subtitle { color: #7f8c8d; font-size: 1.1rem; margin-top: 5px; }
+        
+        /* Navigation */
+        .back-btn { display: inline-block; text-decoration: none; color: #3498db; font-weight: bold; margin-bottom: 20px; }
+        .back-btn:hover { text-decoration: underline; }
+
+        /* Sections */
+        h2 { color: #34495e; border-left: 5px solid #3498db; padding-left: 15px; margin-top: 40px; }
+        p, li { font-size: 1.05rem; color: #555; }
+        
+        /* The Formula Box */
+        .formula-box { background: #2c3e50; color: white; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 1.1rem; text-align: center; margin: 20px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #f8f9fa; color: #333; }
+        
+        /* Comparison Cards */
+        .comparison { display: flex; gap: 20px; margin-top: 20px; }
+        .card { flex: 1; background: #fff; border: 1px solid #eee; padding: 20px; border-radius: 8px; }
+        .card.bad { border-top: 4px solid #e74c3c; }
+        .card.good { border-top: 4px solid #27ae60; background: #f0fff4; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="/" class="back-btn">← Back to App</a>
+
+    <header>
+        <h1>⚡ WDS Scheduling Engine</h1>
+        <p class="subtitle">Technical Documentation & Research Overview</p>
+    </header>
+
+    <section>
+        <h2>📖 Project Objective</h2>
+        <p>
+            In High-Performance Computing (HPC) and Cloud systems, standard CPU schedulers fail to handle mixed workloads efficiently.
+            This project introduces <b>Weighted Dynamic Scoring (WDS)</b>, a hybrid algorithm designed to balance three competing goals simultaneously:
+        </p>
+        <ul>
+            <li><b>Speed:</b> Minimizing Turnaround Time (like SJF).</li>
+            <li><b>Fairness:</b> Preventing Starvation (like FIFO).</li>
+            <li><b>Urgency:</b> Respecting User Priority (like Priority Scheduling).</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>🧠 The Mathematical Formula</h2>
+        <p>Instead of a rigid rule (like "shortest job first"), WDS calculates a real-time score for every waiting process. The process with the highest score wins the CPU.</p>
+        
+        <div class="formula-box">
+            Score = (W_wait × WaitTime) + (W_burst × Efficiency) + (W_prio × Priority)
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Component</th>
+                    <th>Why we need it? (The Logic)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>Wait Weight</b> (Aging)</td>
+                    <td>Ensures that if a task waits for a long time, its score grows massive, forcing the CPU to pick it. (Solves Starvation).</td>
+                </tr>
+                <tr>
+                    <td><b>Burst Weight</b> (Speed)</td>
+                    <td>Gives a bonus to short jobs. This clears the queue quickly and lowers average system latency.</td>
+                </tr>
+                <tr>
+                    <td><b>Priority Weight</b> (Urgency)</td>
+                    <td>Allows critical tasks (e.g., "System Crash Alert") to override the math and run immediately.</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>🌍 Why is this better? (Gap Analysis)</h2>
+        <div class="comparison">
+            <div class="card bad">
+                <h3>❌ The Problem</h3>
+                <p><b>FCFS:</b> Causes "Convoy Effect" (UI freezes behind background tasks).</p>
+                <p><b>SJF:</b> Causes "Starvation" (Long videos never process if short texts keep coming).</p>
+            </div>
+            <div class="card good">
+                <h3>✅ The WDS Solution</h3>
+                <p><b>Hybrid Approach:</b> Acts like SJF when the system is busy to clear traffic, but switches to Fairness mode for old tasks.</p>
+                <p><b>Cooperative:</b> Uses "Yield Points" to allow high-priority interruptions.</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>🛠️ Tech Stack</h2>
+        <ul>
+            <li><b>Backend Logic:</b> Python (Flask)</li>
+            <li><b>Algorithm:</b> Custom Heuristic ($O(N)$ Complexity)</li>
+            <li><b>Frontend:</b> HTML5, CSS3, JavaScript</li>
+            <li><b>Deployment:</b> Vercel (Serverless)</li>
+        </ul>
+    </section>
+</div>
+
+</body>
+</html>
