@@ -5,7 +5,7 @@
 <style>
     body { font-family: 'Poppins', sans-serif; }
     
-    /* REUSING YOUR HERO STYLE */
+    /* HERO SECTION */
     .hero-section {
         background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
         padding: 50px 20px;
@@ -29,7 +29,17 @@
     .doc-card p, .doc-card li { color: #bdc3c7; line-height: 1.7; font-size: 1rem; }
     .doc-card strong { color: #fff; }
 
-    /* FORMULA BOX (Exact copy from Index) */
+    /* INSTRUCTION BOX STYLE */
+    .step-box {
+        background: #34495e;
+        border-left: 4px solid #2ecc71;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+    }
+    .step-title { color: #2ecc71; font-weight: bold; display: block; margin-bottom: 5px; }
+
+    /* FORMULA BOX */
     .formula-box {
         background: #212529;
         border-left: 5px solid #f1c40f;
@@ -50,32 +60,63 @@
     }
     .table-custom th { border-bottom: 2px solid #3498db; color: #3498db; padding: 10px; }
     .table-custom td { border-bottom: 1px solid #444; padding: 10px; vertical-align: top; }
+
+    /* TESTING TAGS */
+    .test-case {
+        background: #e74c3c; 
+        color: white; 
+        padding: 4px 8px; 
+        border-radius: 4px; 
+        font-size: 0.85em; 
+        font-weight: bold;
+        margin-right: 10px;
+        text-transform: uppercase;
+    }
 </style>
 
 <div class="hero-section text-center text-white">
     <h1 class="display-5 fw-bold mb-2">📖 Project Documentation</h1>
-    <p class="lead mb-4" style="opacity: 0.9;">Technical breakdown of the WDS Scheduling Engine</p>
+    <p class="lead mb-4" style="opacity: 0.9;">Technical Breakdown, User Guide & Testing Instructions</p>
     <a class="btn btn-light fw-bold shadow text-dark" href="/">← Back to Dashboard</a>
 </div>
 
 <div class="container">
+
+    <div class="doc-card">
+        <h3>🚀 How to Run the Simulator</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="step-box">
+                    <span class="step-title">OPTION 1: Demo Mode</span>
+                    <p class="mb-0">
+                        Loads a pre-set "Starvation Scenario" (1 Long Job vs. 5 Short Jobs). Use this to instantly visualize how WDS prevents the long job from being blocked forever.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="step-box" style="border-left-color: #f1c40f;">
+                    <span class="step-title" style="color: #f1c40f;">OPTION 2: Custom Input</span>
+                    <p class="mb-0">
+                        Enter your own Arrival Times, Burst Times, and Priorities. Use this mode to test specific homework problems or stress-test the algorithm.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <div class="doc-card">
-        <h3>🎯 Project Objective</h3>
+        <h3>🎯 Project Purpose</h3>
         <p>
-            In High-Performance Computing (HPC) and Cloud systems, standard CPU schedulers fail to handle mixed workloads efficiently.
-            This project introduces <strong>Weighted Dynamic Scoring (WDS)</strong>, a hybrid algorithm designed to balance three competing goals simultaneously:
+            <strong>Why was this built?</strong> Standard operating system schedulers like FCFS and SJF are rigid. They optimize for <em>either</em> speed <em>or</em> fairness, but never both.
         </p>
-        <ul>
-            <li><strong>Speed:</strong> Minimizing Turnaround Time (like SJF).</li>
-            <li><strong>Fairness:</strong> Preventing Starvation (like FIFO/FCFS).</li>
-            <li><strong>Urgency:</strong> Respecting User Priority (like Priority Scheduling).</li>
-        </ul>
+        <p>
+            The goal of this project is to demonstrate a <strong>Hybrid Heuristic Algorithm (WDS)</strong> that uses a weighted formula to dynamically adapt its behavior. It proves that we can achieve high throughput (Speed) without sacrificing user experience (Fairness) in Cloud and 5G environments.
+        </p>
     </div>
 
     <div class="doc-card">
-        <h3>🧠 The Mathematical Formula</h3>
-        <p>Instead of a rigid rule (like "shortest job first"), WDS calculates a real-time score for every waiting process. The process with the highest score wins the CPU.</p>
+        <h3>🧠 The WDS Formula</h3>
+        <p>Instead of a rigid rule, WDS calculates a real-time score for every waiting process. The highest score wins.</p>
         
         <div class="formula-box shadow-sm">
             Score = (W<sub>wait</sub> × WaitTime) + (W<sub>burst</sub> × <sup>30</sup>/<sub>BurstTime</sub>) + (W<sub>prio</sub> × Priority)
@@ -103,6 +144,29 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+
+    <div class="doc-card" style="border: 1px solid #f39c12;">
+        <h3 style="color: #f39c12; border-color: #f39c12;">🧪 For Developers: What to Test?</h3>
+        <p>If you are looking to find flaws or verify stability, try these specific edge cases in <strong>Custom Mode</strong>:</p>
+        
+        <ul style="list-style: none; padding-left: 0;">
+            <li class="mb-3">
+                <span class="test-case">TEST 1</span> <strong>The Starvation Trap</strong><br>
+                Add one massive job (Burst=100) followed by many tiny jobs (Burst=1).
+                <br><em class="text-muted">Expected Result:</em> The massive job should eventually run due to the "Aging Factor".
+            </li>
+            <li class="mb-3">
+                <span class="test-case">TEST 2</span> <strong>The Priority Override</strong><br>
+                Add a long job, then add a short job with Priority=10.
+                <br><em class="text-muted">Expected Result:</em> The Priority=10 job should cut the line immediately.
+            </li>
+            <li class="mb-3">
+                <span class="test-case">TEST 3</span> <strong>The Zero Burst Crash</strong><br>
+                Try entering a Burst Time of 0.
+                <br><em class="text-muted">Expected Result:</em> The system should handle it gracefully (internally converts to minimal burst) without crashing.
+            </li>
+        </ul>
     </div>
 
     <div class="row">
