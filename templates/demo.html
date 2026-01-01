@@ -1,41 +1,51 @@
 {% extends "base.html" %}
 
 {% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
     body { font-family: 'Poppins', sans-serif; }
     .mono { font-family: 'Roboto Mono', monospace; }
     
-    /* NEW STYLES FOR READY QUEUE VISUAL */
     .queue-step {
         display: flex;
         align-items: center;
-        background: #2c3e50;
-        border: 1px solid #444;
+        background: #1e1e1e;
+        border: 1px solid #333;
         margin-bottom: 8px;
-        padding: 5px 10px;
-        border-radius: 6px;
+        padding: 8px 12px;
+        border-radius: 4px;
         font-size: 0.85rem;
     }
     .time-badge {
-        background: #f39c12; color: #000; font-weight: bold; 
+        background: #ffc107; color: #000; font-weight: bold; 
         padding: 2px 6px; border-radius: 4px; margin-right: 15px; width: 80px; text-align: center;
     }
     .cpu-box {
-        background: #27ae60; color: white; border: 1px solid #2ecc71;
+        background: #198754; color: white; border: 1px solid #146c43;
         padding: 3px 10px; border-radius: 4px; font-weight: bold; margin-right: 20px;
-        box-shadow: 0 0 5px rgba(46, 204, 113, 0.5);
     }
     .queue-box {
-        background: #34495e; color: #bdc3c7; border: 1px dashed #7f8c8d;
+        background: #343a40; color: #ced4da; border: 1px solid #495057;
         padding: 2px 8px; border-radius: 4px; margin-right: 5px;
     }
-    .arrow-icon { color: #7f8c8d; margin-right: 10px; }
+    
+    .system-msg {
+        background: #0d2a4e; 
+        border-left: 3px solid #0dcaf0; 
+        color: #d1e7dd;
+        padding: 8px 12px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        font-family: 'Roboto Mono', monospace;
+        font-size: 0.85rem;
+    }
 </style>
 
 <div class="text-center mb-4">
-    <h2 class="fw-bold text-warning">🧪 WDS Advantage Scenarios</h2>
-    <p class="lead text-light">See exactly where WDS beats FCFS and SJF.</p>
+    <h3 class="fw-bold text-light">WDS Advantage Scenarios</h3>
+    <p class="text-light" style="opacity: 0.8;">Analyze where WDS outperforms FCFS and SJF.</p>
 </div>
 
 <div class="row mb-4 justify-content-center">
@@ -52,6 +62,13 @@
         <div class="card bg-dark border-secondary shadow-lg">
             <div class="card-header fw-bold text-white">Scenario Breakdown</div>
             <div class="card-body">
+                
+                <div class="alert alert-dark py-2 mb-3 shadow-sm d-flex justify-content-around align-items-center border-secondary">
+                    <strong class="text-info">Simulation Rules:</strong>
+                    <span class="text-light">• Burst Time: Lower = Faster</span>
+                    <span class="text-warning fw-bold">• Priority: Higher Number = More Urgent (10 > 1)</span>
+                </div>
+
                 <div class="row">
                     <div class="col-md-6 border-end border-secondary">
                         <h6 class="text-danger">The Problem</h6>
@@ -69,48 +86,48 @@
 
 <div class="row">
     <div class="col-md-5">
-        <div class="card bg-dark border-light shadow mb-3">
-            <div class="card-header bg-success text-white fw-bold">⚡ Decision Logic (VS Battle)</div>
-            <div class="card-body p-0" id="decisionLogContainer" style="max-height: 600px; overflow-y: auto; background: #222;">
+        <div class="card bg-dark border-secondary shadow mb-3">
+            <div class="card-header bg-success text-white fw-bold">Scheduler Decision Log</div>
+            <div class="card-body p-0" id="decisionLogContainer" style="max-height: 600px; overflow-y: auto; background: #1a1a1a;">
                 <div class="text-center text-muted py-5">
-                    Click a scenario button to start the battle...
+                    Click a scenario button to start the analysis...
                 </div>
             </div>
         </div>
 
-        <div class="card bg-secondary text-white shadow border-info mb-3">
+        <div class="card bg-dark text-white shadow border-secondary mb-3">
             <div class="card-body py-2 small d-flex justify-content-between">
-                <span>Avg TAT: <strong id="mathTAT">...</strong></span>
-                <span>Avg Wait: <strong id="mathWT">...</strong></span>
+                <span>Avg TAT: <strong id="mathTAT" class="text-info">...</strong></span>
+                <span>Avg Wait: <strong id="mathWT" class="text-info">...</strong></span>
             </div>
         </div>
     </div>
 
     <div class="col-md-7">
-        <div class="card bg-dark border-light shadow mb-3">
+        <div class="card bg-dark border-secondary shadow mb-3">
             <div class="card-header fw-bold text-white small">Execution Gantt Chart</div>
             <div class="card-body p-2">
-                <div id="ganttChart" class="d-flex align-items-center" style="height: 50px; background: #222; border-radius: 5px; overflow: hidden;"></div>
+                <div id="ganttChart" class="d-flex align-items-center" style="height: 50px; background: #222; border-radius: 4px; overflow: hidden;"></div>
                 <div class="d-flex justify-content-between text-muted small px-1 mt-1"><span>0s</span><span id="totalTimeLabel">?</span></div>
             </div>
         </div>
         
         <div class="row mb-3">
             <div class="col-md-6">
-                <div class="card bg-dark border-light shadow h-100">
+                <div class="card bg-dark border-secondary shadow h-100">
                     <div class="card-header fw-bold text-white small">Efficiency (TAT)</div>
                     <div class="card-body p-1"><canvas id="metricChart" height="150"></canvas></div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="card bg-dark border-light shadow h-100">
+                <div class="card bg-dark border-secondary shadow h-100">
                     <div class="card-header fw-bold text-white small">Fairness (Wait Time)</div>
                     <div class="card-body p-1"><canvas id="fairnessChart" height="150"></canvas></div>
                 </div>
             </div>
         </div>
 
-        <div class="card bg-dark border-light shadow mb-3">
+        <div class="card bg-dark border-secondary shadow mb-3">
             <div class="card-header fw-bold text-white small">Process Data</div>
             <div class="table-responsive">
                 <table class="table table-dark table-sm mb-0 text-center small">
@@ -120,11 +137,11 @@
             </div>
         </div>
 
-        <div class="card bg-dark border-light shadow">
-            <div class="card-header fw-bold text-white small bg-darker border-bottom border-secondary">
-                🚦 Visual Ready Queue (Timeline)
+        <div class="card bg-dark border-secondary shadow">
+            <div class="card-header fw-bold text-white small">
+                Visual Ready Queue (Timeline)
             </div>
-            <div class="card-body p-2 bg-darker" id="queueContainer" style="max-height: 250px; overflow-y: auto;">
+            <div class="card-body p-2 bg-dark" id="queueContainer" style="max-height: 250px; overflow-y: auto;">
                 <div class="text-center text-muted small py-2">Run simulation to see queue states...</div>
             </div>
         </div>
@@ -132,14 +149,13 @@
 </div>
 
 <script>
-    // --- 1. SCENARIO CONFIGURATION ---
     const scenarios = {
         1: { title: "Convoy Avoidance", data: [{pid: 1, at: 0, bt: 50, prio: 1}, {pid: 2, at: 0, bt: 2, prio: 1}, {pid: 3, at: 0, bt: 2, prio: 1}, {pid: 4, at: 0, bt: 2, prio: 1}], problem: "FCFS blindly picks the massive P1 first. The small jobs (P2, P3, P4) are stuck waiting 50s just to do 2s of work.", solution: "WDS detects the high 'Burst Score' (1/BT) of the small jobs. It acts like SJF to clear them first, drastically lowering average wait time." },
         2: { title: "VIP Emergency", data: [{pid: 1, at: 0, bt: 5, prio: 1}, {pid: 2, at: 0, bt: 10, prio: 10}, {pid: 3, at: 0, bt: 5, prio: 1}], problem: "SJF ignores the Critical P2 because it is longer (10s) than the others (5s). The VIP waits.", solution: "WDS sees P2's Priority is 10. The formula `Weight * Priority` generates a massive score that overrides the length penalty." },
         3: { title: "Starvation Rescue", data: [{pid: 1, at: 0, bt: 15, prio: 1}, {pid: 2, at: 0, bt: 2, prio: 1}, {pid: 3, at: 2, bt: 2, prio: 1}, {pid: 4, at: 4, bt: 2, prio: 1}, {pid: 5, at: 6, bt: 2, prio: 1}, {pid: 6, at: 8, bt: 2, prio: 1}], problem: "Short jobs keep arriving one after another. SJF will just pick the new short job every time, forcing P1 to wait forever (Starvation).", solution: "WDS lets P2, P3, and P4 run first. But by Time=6, P1 has waited 6 seconds. Its Aging Score (6s × 3.0 = 18) finally beats the Short Job Efficiency Score (15). P1 cuts in line before P5." },        
         4: { title: "Smart Trade-off", data: [{pid: 1, at: 0, bt: 12, prio: 8}, {pid: 2, at: 0, bt: 3, prio: 1}, {pid: 3, at: 0, bt: 6, prio: 5}], problem: "No standard algorithm gets this right. SJF ignores value. Priority ignores speed.", solution: "WDS calculates a balanced score. It likely picks P3 (Medium Speed + High Value) as the best compromise." }
     };
-// UPDATED: Everyone arrives at 0 so they fight for the CPU
+
     function runScenario(id) {
         let config = scenarios[id];
         document.getElementById('problemDesc').innerText = config.problem;
@@ -152,26 +168,24 @@
         })
         .then(res => res.json())
         .then(data => {
-            if(!data.decision_log) { alert("Error: Backend didn't send decision logs. Please restart python app.py"); return; }
+            if(!data.decision_log) { alert("Error: Backend issue."); return; }
             updateTable(data.details.wds);
             renderMath(data.details.wds);
             renderGantt(data.timeline_wds);
             renderMetrics(data.metrics);
             renderFairness(data.details);
             renderDecisionLog(data.decision_log);
-            renderQueueVisual(data.decision_log); // NEW VISUAL
+            renderQueueVisual(data.decision_log);
         })
         .catch(err => alert("Server Error: Make sure app.py is running!"));
     }
 
-    // --- 2. NEW QUEUE VISUALIZATION ---
     function renderQueueVisual(logs) {
         let container = document.getElementById('queueContainer');
         container.innerHTML = "";
 
         logs.forEach(step => {
             let winner = step.winner_pid;
-            // Who is waiting? Everyone in candidates except the winner
             let waiting = step.candidates.filter(c => c.pid !== winner);
             
             let waitingHTML = "";
@@ -189,9 +203,7 @@
                             <span style="font-size:0.6rem; color:#aaa; margin-bottom:-2px;">IN CPU</span>
                             <span class="cpu-box">P${winner}</span>
                         </div>
-                        
-                        <span class="arrow-icon">⬅</span>
-                        
+                        <span class="text-secondary mx-2">&larr;</span>
                         <div class="d-flex flex-column">
                             <span style="font-size:0.6rem; color:#aaa; margin-bottom:2px;">READY QUEUE</span>
                             <div>${waitingHTML}</div>
@@ -202,62 +214,101 @@
         });
     }
 
-    // --- 3. COMMENTARY LOGIC ---
     function renderDecisionLog(logs) {
         let container = document.getElementById('decisionLogContainer');
         container.innerHTML = "";
 
         logs.forEach((step, index) => {
+            let systemMsgHTML = "";
+            if (step.system_msg && step.system_msg.length > 0) {
+                step.system_msg.forEach(msg => {
+                    systemMsgHTML += `<div class="system-msg">${msg}</div>`;
+                });
+            }
+
             let wdsWinner = step.candidates.find(c => c.pid === step.winner_pid);
             let fcfsWinner = step.candidates.reduce((p, c) => (c.wait > p.wait ? c : p)); 
             let sjfWinner = step.candidates.reduce((p, c) => (c.bt < p.bt ? c : p));     
 
-            let badge = `<span class="badge bg-secondary">✅ Standard Choice</span>`;
+            let badge = `<span class="badge bg-secondary">Standard Choice</span>`;
             let description = `Everyone agrees on <strong>P${wdsWinner.pid}</strong>.`;
             let vsHTML = `<div class="d-flex justify-content-center align-items-center text-success fw-bold p-2 bg-dark rounded"><span>P${wdsWinner.pid} is the undisputed best choice.</span></div>`;
 
-            if (wdsWinner.pid === fcfsWinner.pid && wdsWinner.pid === sjfWinner.pid) { /* Unanimous - Keep Default */ } 
+            if (wdsWinner.pid === fcfsWinner.pid && wdsWinner.pid === sjfWinner.pid) { } 
             else if (wdsWinner.pid !== fcfsWinner.pid && wdsWinner.pid === sjfWinner.pid) {
-                badge = `<span class="badge bg-info">🚀 Speed Optimization</span>`;
+                badge = `<span class="badge bg-info">Speed Optimization</span>`;
                 description = `FCFS wanted the slow job (P${fcfsWinner.pid}). <strong>WDS intervened</strong> and picked the fast job (P${wdsWinner.pid}).`;
-                vsHTML = `<div class="d-flex justify-content-between align-items-center bg-darker p-2 rounded border border-secondary"><div class="text-center text-muted" style="width:45%;"><small>FCFS</small><br><strong class="text-danger">P${fcfsWinner.pid}</strong><br><small>Slow</small></div><div class="text-warning fw-bold">VS</div><div class="text-center" style="width:45%;"><small class="text-success">WDS</small><br><strong class="text-success">P${wdsWinner.pid}</strong><br><small>Fast</small></div></div>`;
+                vsHTML = `<div class="d-flex justify-content-between align-items-center bg-darker p-2 rounded border border-secondary"><div class="text-center text-muted" style="width:45%;"><small>FCFS</small><br><strong class="text-danger">P${fcfsWinner.pid}</strong><br><small>Slow</small></div><div class="text-light fw-bold">VS</div><div class="text-center" style="width:45%;"><small class="text-success">WDS</small><br><strong class="text-success">P${wdsWinner.pid}</strong><br><small>Fast</small></div></div>`;
             } 
             else if (wdsWinner.pid !== sjfWinner.pid && wdsWinner.pid === fcfsWinner.pid) {
-                badge = `<span class="badge bg-warning text-dark">⚖️ Fairness Rescue</span>`;
+                badge = `<span class="badge bg-warning text-dark">Fairness Rescue</span>`;
                 description = `SJF wanted the newest short job (P${sjfWinner.pid}). <strong>WDS overruled it</strong> because P${wdsWinner.pid} waited too long.`;
-                vsHTML = `<div class="d-flex justify-content-between align-items-center bg-darker p-2 rounded border border-secondary"><div class="text-center text-muted" style="width:45%;"><small>SJF</small><br><strong class="text-danger">P${sjfWinner.pid}</strong><br><small>New</small></div><div class="text-warning fw-bold">VS</div><div class="text-center" style="width:45%;"><small class="text-success">WDS</small><br><strong class="text-success">P${wdsWinner.pid}</strong><br><small>Waiting</small></div></div>`;
+                vsHTML = `<div class="d-flex justify-content-between align-items-center bg-darker p-2 rounded border border-secondary"><div class="text-center text-muted" style="width:45%;"><small>SJF</small><br><strong class="text-danger">P${sjfWinner.pid}</strong><br><small>New</small></div><div class="text-light fw-bold">VS</div><div class="text-center" style="width:45%;"><small class="text-success">WDS</small><br><strong class="text-success">P${wdsWinner.pid}</strong><br><small>Waiting</small></div></div>`;
             }
             else {
-                badge = `<span class="badge bg-danger">⭐ Priority Override</span>`;
+                badge = `<span class="badge bg-danger">Priority Override</span>`;
                 description = `Standard algos ignored <strong>P${wdsWinner.pid}</strong>. WDS prioritized it due to <strong>Critical Status</strong>.`;
-                vsHTML = `<div class="d-flex justify-content-between align-items-center bg-darker p-2 rounded border border-secondary"><div class="text-center text-muted" style="width:45%;"><small>Standard</small><br><strong class="text-danger">P${sjfWinner.pid}</strong><br><small>Low Prio</small></div><div class="text-warning fw-bold">VS</div><div class="text-center" style="width:45%;"><small class="text-success">WDS</small><br><strong class="text-success">P${wdsWinner.pid}</strong><br><small>Priority ${wdsWinner.prio}</small></div></div>`;
+                vsHTML = `<div class="d-flex justify-content-between align-items-center bg-darker p-2 rounded border border-secondary"><div class="text-center text-muted" style="width:45%;"><small>Standard</small><br><strong class="text-danger">P${sjfWinner.pid}</strong><br><small>Low Prio</small></div><div class="text-light fw-bold">VS</div><div class="text-center" style="width:45%;"><small class="text-success">WDS</small><br><strong class="text-success">P${wdsWinner.pid}</strong><br><small>Priority ${wdsWinner.prio}</small></div></div>`;
             }
 
             container.innerHTML += `
                 <div class="p-3 mb-3 bg-dark border border-secondary rounded shadow-sm">
                     <div class="d-flex justify-content-between mb-2">
-                        <span class="text-warning fw-bold small">⏱ Time: ${step.time}s</span>
+                        <span class="text-warning fw-bold small">Time: ${step.time}s</span>
                         ${badge}
                     </div>
+                    ${systemMsgHTML}
                     ${vsHTML}
                     <div class="mt-2 text-light small" style="line-height: 1.4;">${description}</div>
                 </div>`;
         });
     }
 
-    // --- 4. STANDARD VISUALS ---
     function updateTable(procs) { document.getElementById('detailsTable').innerHTML = procs.sort((a,b)=>a.pid-b.pid).map(p=>`<tr><td>P${p.pid}</td><td>${p.at}</td><td>${p.bt}</td><td>${p.prio}</td><td class="text-warning">${p.tat}</td><td class="text-info">${p.wait}</td></tr>`).join(''); }
     function renderMath(procs) { let n=procs.length; document.getElementById('mathTAT').innerText=(procs.reduce((a,b)=>a+b.tat,0)/n).toFixed(2); document.getElementById('mathWT').innerText=(procs.reduce((a,b)=>a+b.wait,0)/n).toFixed(2); }
     function renderGantt(tl) { 
         let end=tl[tl.length-1].start+tl[tl.length-1].duration; document.getElementById('totalTimeLabel').innerText=end+'s';
         document.getElementById('ganttChart').innerHTML = tl.map(t=>`<div style="width:${(t.duration/end)*100}%; background:${t.pid===1?'#e74c3c':(t.pid%2?'#3498db':'#f1c40f')}; height:100%; display:flex; justify-content:center; align-items:center; color:#fff; border-right:1px solid #222; font-size:0.8em;">P${t.pid}</div>`).join(''); 
     }
+    
     let mChart, fChart;
+    
     function renderMetrics(m) {
-        if(mChart) mChart.destroy(); mChart=new Chart(document.getElementById('metricChart'),{type:'bar',data:{labels:['FCFS','SJF','WDS'],datasets:[{data:[m.tat.fcfs,m.tat.sjf,m.tat.wds],backgroundColor:['#e74c3c','#3498db','#2ecc71']}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#444'}}}}});
+        if(mChart) mChart.destroy(); 
+        mChart=new Chart(document.getElementById('metricChart'),{
+            type:'bar',
+            data:{
+                labels:['FCFS','SJF','WDS'],
+                datasets:[{data:[m.tat.fcfs,m.tat.sjf,m.tat.wds],backgroundColor:['#e74c3c','#3498db','#2ecc71']}]
+            },
+            options:{
+                plugins:{legend:{display:false}},
+                scales:{y:{beginAtZero:true,grid:{color:'#444'}}}
+            }
+        });
     }
+
     function renderFairness(d) {
-        if(fChart) fChart.destroy(); fChart=new Chart(document.getElementById('fairnessChart'),{type:'bar',data:{labels:d.wds.map(p=>'P'+p.pid),datasets:[{label:'Wait',data:d.wds.map(p=>p.wait),backgroundColor:'#f1c40f',minBarLength:5}]},options:{plugins:{tooltip:{callbacks:{label:c=>c.raw+'s'}}},scales:{y:{beginAtZero:true,grid:{color:'#444'}}}}});
+        if(fChart) fChart.destroy(); 
+        fChart=new Chart(document.getElementById('fairnessChart'),{
+            type:'bar',
+            data:{
+                labels:d.wds.map(p=>'P'+p.pid),
+                datasets:[{
+                    label:'Wait',
+                    data:d.wds.map(p=>p.wait),
+                    backgroundColor:'#f1c40f',
+                    minBarLength:5
+                }]
+            },
+            options:{
+                plugins:{
+                    legend:{display:false},
+                    tooltip:{callbacks:{label:c=>c.raw+'s'}}
+                },
+                scales:{y:{beginAtZero:true,grid:{color:'#444'}}}
+            }
+        });
     }
 </script>
 {% endblock %}

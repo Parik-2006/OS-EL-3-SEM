@@ -5,65 +5,59 @@
 <style>
     body { font-family: 'Poppins', sans-serif; }
     
-    /* HERO SECTION */
     .hero-section {
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%);
         padding: 50px 20px;
         border-radius: 15px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         margin-bottom: 30px;
     }
 
-    /* DARK CARD STYLE (Matches Index) */
     .doc-card {
-        background: #2c3e50;
-        border: 1px solid #444;
+        background: #212529;
+        border: 1px solid #333;
         border-radius: 10px;
         padding: 30px;
         margin-bottom: 25px;
-        color: #ecf0f1;
+        color: #e0e0e0;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     
-    .doc-card h3 { color: #3498db; font-weight: 700; margin-bottom: 20px; border-bottom: 2px solid #444; padding-bottom: 10px; }
-    .doc-card p, .doc-card li { color: #bdc3c7; line-height: 1.7; font-size: 1rem; }
+    .doc-card h3 { color: #0dcaf0; font-weight: 700; margin-bottom: 20px; border-bottom: 2px solid #444; padding-bottom: 10px; }
+    .doc-card p, .doc-card li { color: #adb5bd; line-height: 1.7; font-size: 1rem; }
     .doc-card strong { color: #fff; }
 
-    /* INSTRUCTION BOX STYLE */
     .step-box {
-        background: #34495e;
-        border-left: 4px solid #2ecc71;
+        background: #2c3034;
+        border-left: 4px solid #198754;
         padding: 15px;
         margin-bottom: 15px;
         border-radius: 4px;
     }
-    .step-title { color: #2ecc71; font-weight: bold; display: block; margin-bottom: 5px; }
+    .step-title { color: #198754; font-weight: bold; display: block; margin-bottom: 5px; }
 
-    /* FORMULA BOX */
     .formula-box {
-        background: #212529;
-        border-left: 5px solid #f1c40f;
+        background: #1a1a1a;
+        border-left: 5px solid #ffc107;
         padding: 20px;
         font-family: 'Courier New', monospace;
-        color: #f1c40f;
+        color: #ffc107;
         font-size: 1.1rem;
         border-radius: 5px;
         text-align: center;
         margin: 20px 0;
     }
 
-    /* TABLE STYLING */
     .table-custom {
         width: 100%;
-        color: #ecf0f1;
+        color: #e0e0e0;
         margin-top: 15px;
     }
-    .table-custom th { border-bottom: 2px solid #3498db; color: #3498db; padding: 10px; }
+    .table-custom th { border-bottom: 2px solid #0d6efd; color: #0d6efd; padding: 10px; }
     .table-custom td { border-bottom: 1px solid #444; padding: 10px; vertical-align: top; }
 
-    /* TESTING TAGS */
     .test-case {
-        background: #e74c3c; 
+        background: #dc3545; 
         color: white; 
         padding: 4px 8px; 
         border-radius: 4px; 
@@ -75,15 +69,15 @@
 </style>
 
 <div class="hero-section text-center text-white">
-    <h1 class="display-5 fw-bold mb-2">📖 Project Documentation</h1>
-    <p class="lead mb-4" style="opacity: 0.9;">Technical Breakdown, User Guide & Testing Instructions</p>
-    <a class="btn btn-light fw-bold shadow text-dark" href="/">← Back to Dashboard</a>
+    <h1 class="display-5 fw-bold mb-2">Project Documentation</h1>
+    <p class="lead mb-4" style="color: #adb5bd;">Technical Breakdown, User Guide & Testing Instructions</p>
+    <a class="btn btn-outline-light fw-bold" href="/">Back to Dashboard</a>
 </div>
 
 <div class="container">
 
     <div class="doc-card">
-        <h3>🚀 How to Run the Simulator</h3>
+        <h3>How to Run the Simulator</h3>
         <div class="row">
             <div class="col-md-6">
                 <div class="step-box">
@@ -94,8 +88,8 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="step-box" style="border-left-color: #f1c40f;">
-                    <span class="step-title" style="color: #f1c40f;">OPTION 2: Custom Input</span>
+                <div class="step-box" style="border-left-color: #ffc107;">
+                    <span class="step-title" style="color: #ffc107;">OPTION 2: Custom Input</span>
                     <p class="mb-0">
                         Enter your own Arrival Times, Burst Times, and Priorities. Use this mode to test specific homework problems or stress-test the algorithm.
                     </p>
@@ -105,7 +99,7 @@
     </div>
     
     <div class="doc-card">
-        <h3>🎯 Project Purpose</h3>
+        <h3>Project Purpose</h3>
         <p>
             <strong>Why was this built?</strong> Standard operating system schedulers like FCFS and SJF are rigid. They optimize for <em>either</em> speed <em>or</em> fairness, but never both.
         </p>
@@ -115,11 +109,11 @@
     </div>
 
     <div class="doc-card">
-        <h3>🧠 The WDS Formula</h3>
+        <h3>The WDS Formula</h3>
         <p>Instead of a rigid rule, WDS calculates a real-time score for every waiting process. The highest score wins.</p>
         
         <div class="formula-box shadow-sm">
-            Score = (W<sub>wait</sub> × WaitTime) + (W<sub>burst</sub> × <sup>30</sup>/<sub>BurstTime</sub>) + (W<sub>prio</sub> × Priority)
+            Score = (W_wait × WaitTime) + (W_burst × 30/BurstTime) + (W_prio × Priority)
         </div>
 
         <table class="table-custom">
@@ -131,55 +125,55 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><strong class="text-info">W<sub>wait</sub> (Aging)</strong></td>
+                    <td><strong class="text-info">W_wait (Aging)</strong></td>
                     <td>Ensures that if a task waits for a long time, its score grows massive, forcing the CPU to pick it. (Solves Starvation).</td>
                 </tr>
                 <tr>
-                    <td><strong class="text-warning">W<sub>burst</sub> (Efficiency)</strong></td>
+                    <td><strong class="text-warning">W_burst (Efficiency)</strong></td>
                     <td>Gives a bonus to short jobs. This clears the queue quickly and lowers average system latency.</td>
                 </tr>
                 <tr>
-                    <td><strong class="text-danger">W<sub>prio</sub> (Urgency)</strong></td>
+                    <td><strong class="text-danger">W_prio (Urgency)</strong></td>
                     <td>Allows critical tasks (e.g., "System Crash Alert") to override the math and run immediately.</td>
                 </tr>
             </tbody>
         </table>
     </div>
 
-    <div class="doc-card" style="border: 1px solid #f39c12;">
-        <h3 style="color: #f39c12; border-color: #f39c12;">🧪 For Developers: What to Test?</h3>
+    <div class="doc-card" style="border: 1px solid #fd7e14;">
+        <h3 style="color: #fd7e14; border-color: #fd7e14;">For Developers: What to Test?</h3>
         <p>If you are looking to find flaws or verify stability, try these specific edge cases in <strong>Custom Mode</strong>:</p>
         
         <ul style="list-style: none; padding-left: 0;">
             <li class="mb-3">
                 <span class="test-case">TEST 1</span> <strong>The Starvation Trap</strong><br>
                 Add one massive job (Burst=100) followed by many tiny jobs (Burst=1).
-                <br><em class="text-muted">Expected Result:</em> The massive job should eventually run due to the "Aging Factor".
+                <br><em class="text-secondary">Expected Result:</em> The massive job should eventually run due to the "Aging Factor".
             </li>
             <li class="mb-3">
                 <span class="test-case">TEST 2</span> <strong>The Priority Override</strong><br>
                 Add a long job, then add a short job with Priority=10.
-                <br><em class="text-muted">Expected Result:</em> The Priority=10 job should cut the line immediately.
+                <br><em class="text-secondary">Expected Result:</em> The Priority=10 job should cut the line immediately.
             </li>
             <li class="mb-3">
                 <span class="test-case">TEST 3</span> <strong>The Zero Burst Crash</strong><br>
                 Try entering a Burst Time of 0.
-                <br><em class="text-muted">Expected Result:</em> The system should handle it gracefully (internally converts to minimal burst) without crashing.
+                <br><em class="text-secondary">Expected Result:</em> The system should handle it gracefully (internally converts to minimal burst) without crashing.
             </li>
         </ul>
     </div>
 
     <div class="row">
         <div class="col-md-6">
-            <div class="doc-card" style="border-top: 4px solid #e74c3c;">
-                <h3 class="text-danger" style="border-color: #e74c3c;">❌ The Problem</h3>
+            <div class="doc-card" style="border-top: 4px solid #dc3545;">
+                <h3 class="text-danger" style="border-color: #dc3545;">The Problem</h3>
                 <p><strong>FCFS:</strong> Causes "Convoy Effect" (UI freezes behind background tasks).</p>
                 <p><strong>SJF:</strong> Causes "Starvation" (Long videos never process if short texts keep coming).</p>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="doc-card" style="border-top: 4px solid #27ae60;">
-                <h3 class="text-success" style="border-color: #27ae60;">✅ The WDS Solution</h3>
+            <div class="doc-card" style="border-top: 4px solid #198754;">
+                <h3 class="text-success" style="border-color: #198754;">The WDS Solution</h3>
                 <p><strong>Hybrid Approach:</strong> Acts like SJF when the system is busy to clear traffic, but switches to Fairness mode for old tasks.</p>
                 <p><strong>Cooperative:</strong> Uses "Yield Points" to allow high-priority interruptions.</p>
             </div>
@@ -187,12 +181,12 @@
     </div>
 
     <div class="doc-card">
-        <h3>🛠️ Tech Stack</h3>
+        <h3>Tech Stack</h3>
         <div class="row">
             <div class="col-md-6">
                 <ul>
                     <li><strong>Backend Logic:</strong> Python (Flask)</li>
-                    <li><strong>Algorithm:</strong> Custom Heuristic ($O(N)$ Complexity)</li>
+                    <li><strong>Algorithm:</strong> Custom Heuristic (O(N) Complexity)</li>
                 </ul>
             </div>
             <div class="col-md-6">
@@ -206,7 +200,7 @@
 
 </div>
 
-<footer class="text-center text-muted small py-4 mt-5 border-top border-secondary">
+<footer class="text-center text-secondary small py-4 mt-5 border-top border-secondary">
     © 2025 WDS Scheduler Project | Designed for OS Efficiency Research
 </footer>
 {% endblock %}

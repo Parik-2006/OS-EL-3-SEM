@@ -5,53 +5,43 @@
 <style>
     body { font-family: 'Poppins', sans-serif; }
     
-    /* HERO SECTION STYLE */
     .hero-section {
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        background: linear-gradient(135deg, #0d6efd 0%, #0043a8 100%);
         padding: 60px 20px;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
         margin-bottom: 40px;
     }
 
-    /* CARD STYLES */
     .feature-card {
-        background: #2c3e50;
-        border: 1px solid #444;
-        border-radius: 10px;
+        background: #1e1e1e;
+        border: 1px solid #333;
+        border-radius: 8px;
         height: 100%;
-        transition: transform 0.3s, border-color 0.3s;
-    }
-    .feature-card:hover { 
-        transform: translateY(-5px); 
-        border-color: #3498db; 
-        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.2);
-    }
-
-    /* FORMULA BOX STYLE */
-    .formula-box {
-        background: #212529;
-        border-left: 5px solid #f1c40f;
         padding: 20px;
+    }
+    .feature-card:hover { border-color: #0d6efd; }
+
+    .formula-box {
+        background: #222;
+        border-left: 4px solid #ffc107;
+        padding: 15px;
         font-family: 'Courier New', monospace;
-        color: #f1c40f;
-        font-size: 1.1rem;
-        border-radius: 5px;
-        letter-spacing: 1px;
+        color: #ffc107;
+        border-radius: 4px;
     }
 
-    /* LINK CLEANUP */
     a.card-link { text-decoration: none; color: inherit; }
 </style>
 
 <div class="hero-section text-center text-white">
-    <h1 class="display-4 fw-bold mb-3">⚡ WDS Scheduling Engine</h1>
-    <p class="lead mb-4" style="opacity: 0.9;">A Next-Generation Non-Preemptive Scheduler for High-Performance Computing.</p>
+    <h1 class="display-4 fw-bold mb-3">WDS Scheduling Engine</h1>
+    <p class="lead mb-4" style="color: #e0e0e0;">A Next-Generation Non-Preemptive Scheduler for High-Performance Computing.</p>
     
     <div class="d-flex justify-content-center gap-3 flex-wrap">
-        <a class="btn btn-primary btn-lg px-5 fw-bold shadow" href="/demo">🚀 Run Demo</a>
-        <a class="btn btn-warning btn-lg px-5 fw-bold shadow text-dark" href="/custom">✍ Custom Input</a>
-        <a class="btn btn-light btn-lg px-5 fw-bold shadow text-dark" href="/docs">📖 Documentation</a>
+        <a class="btn btn-light btn-lg px-5 fw-bold text-primary" href="/demo">Run Demo</a>
+        <a class="btn btn-outline-light btn-lg px-5 fw-bold" href="/custom">Custom Input</a>
+        <a class="btn btn-dark btn-lg px-5 fw-bold" href="/docs">Documentation</a>
     </div>
 </div>
 
@@ -62,12 +52,12 @@
     </div>
 
     <div class="col-md-4 mb-3">
-        <div class="card feature-card text-light p-3">
+        <div class="feature-card">
             <h5 class="text-danger fw-bold">FCFS (First Come First Serve)</h5>
-            <p class="small text-muted">The simplest algorithm. Jobs are executed in arrival order.</p>
+            <p class="small text-secondary">The simplest algorithm. Jobs are executed in arrival order.</p>
             <hr class="border-secondary">
-            <ul class="small ps-3">
-                <li class="text-danger">Suffers from <strong>Convoy Effect</strong>.</li>
+            <ul class="small ps-3 text-light">
+                <li class="text-danger">Suffers from Convoy Effect.</li>
                 <li>One long job blocks all short jobs.</li>
                 <li>Terrible response time for interactive tasks.</li>
             </ul>
@@ -75,12 +65,12 @@
     </div>
 
     <div class="col-md-4 mb-3">
-        <div class="card feature-card text-light p-3">
+        <div class="feature-card">
             <h5 class="text-info fw-bold">SJF (Shortest Job First)</h5>
-            <p class="small text-muted">Executes the job with the smallest burst time first.</p>
+            <p class="small text-secondary">Executes the job with the smallest burst time first.</p>
             <hr class="border-secondary">
-            <ul class="small ps-3">
-                <li class="text-warning">Suffers from <strong>Starvation</strong>.</li>
+            <ul class="small ps-3 text-light">
+                <li class="text-warning">Suffers from Starvation.</li>
                 <li>Long jobs may never run if short jobs keep coming.</li>
                 <li>Ignores User Priority completely.</li>
             </ul>
@@ -88,14 +78,14 @@
     </div>
 
     <div class="col-md-4 mb-3">
-        <div class="card feature-card text-light p-3">
+        <div class="feature-card">
             <h5 class="text-success fw-bold">WDS (Weighted Dynamic Score)</h5>
-            <p class="small text-muted">Our proposed hybrid solution.</p>
+            <p class="small text-secondary">Our proposed hybrid solution.</p>
             <hr class="border-secondary">
-            <ul class="small ps-3">
-                <li class="text-success"><strong>Cooperative Multitasking:</strong> Tasks yield to let urgent jobs run.</li>
-                <li><strong>Dynamic Scoring:</strong> Balances Speed (SJF) and Fairness (FCFS).</li>
-                <li><strong>Real-Time Capable:</strong> Critical Priority cuts the line instantly.</li>
+            <ul class="small ps-3 text-light">
+                <li class="text-success">Cooperative Multitasking: Tasks yield to let urgent jobs run.</li>
+                <li>Dynamic Scoring: Balances Speed (SJF) and Fairness (FCFS).</li>
+                <li>Real-Time Capable: Critical Priority cuts the line instantly.</li>
             </ul>
         </div>
     </div>
@@ -104,25 +94,25 @@
 <div class="row mb-5 justify-content-center">
     <div class="col-md-10">
         <div class="card bg-dark border-secondary shadow">
-            <div class="card-header fw-bold text-white bg-darker">🧮 The Core Algorithm</div>
+            <div class="card-header fw-bold text-white">The Core Algorithm</div>
             <div class="card-body">
                 <p class="text-light">At every time step, WDS calculates a <strong>Score</strong> for every waiting process. The process with the highest score is selected for the CPU.</p>
                 
                 <div class="formula-box text-center shadow-sm mb-3">
-                    Score = (W<sub>wait</sub> × WaitTime) + (W<sub>burst</sub> × <sup>1</sup>/<sub>BurstTime</sub>) + (W<sub>prio</sub> × Priority)
+                    Score = (W_wait × WaitTime) + (W_burst × 1/BurstTime) + (W_prio × Priority)
                 </div>
 
                 <div class="row text-center small text-light mt-3">
                     <div class="col-md-4">
-                        <strong class="text-info">W<sub>wait</sub> (Aging Factor)</strong><br>
+                        <strong class="text-info">W_wait (Aging Factor)</strong><br>
                         Prevents Starvation by boosting old jobs.
                     </div>
                     <div class="col-md-4">
-                        <strong class="text-warning">W<sub>burst</sub> (Efficiency)</strong><br>
+                        <strong class="text-warning">W_burst (Efficiency)</strong><br>
                         Mimics SJF by boosting short jobs.
                     </div>
                     <div class="col-md-4">
-                        <strong class="text-danger">W<sub>prio</sub> (Urgency)</strong><br>
+                        <strong class="text-danger">W_prio (Urgency)</strong><br>
                         Allows VIP tasks to cut the line.
                     </div>
                 </div>
@@ -133,17 +123,17 @@
 
 <div class="row mb-5">
     <div class="col-12 text-center mb-4">
-        <h3 class="fw-bold text-light">Real-World Applications (2025 Era)</h3>
+        <h3 class="fw-bold text-light">Real-World Applications</h3>
         <p class="text-secondary">Click a card below to see the WDS implementation details.</p>
     </div>
 
     <div class="col-md-6 mb-3">
         <a href="/real-world/ai" class="card-link">
             <div class="d-flex align-items-center p-3 feature-card">
-                <div class="display-6 me-3">🤖</div>
+                <div class="h3 me-3 text-secondary"><i class="bi bi-cpu"></i></div>
                 <div>
                     <h5 class="fw-bold text-light mb-1">AI Model Training Clusters</h5>
-                    <p class="small text-muted mb-0">Solving Checkpoint latency in Distributed Deep Learning.</p>
+                    <p class="small text-secondary mb-0">Solving Checkpoint latency in Distributed Deep Learning.</p>
                 </div>
             </div>
         </a>
@@ -152,10 +142,10 @@
     <div class="col-md-6 mb-3">
         <a href="/real-world/5g" class="card-link">
             <div class="d-flex align-items-center p-3 feature-card">
-                <div class="display-6 me-3">📡</div>
+                <div class="h3 me-3 text-secondary"><i class="bi bi-wifi"></i></div>
                 <div>
                     <h5 class="fw-bold text-light mb-1">5G/6G Edge Gateways</h5>
-                    <p class="small text-muted mb-0">Critical QoS handling for IoT Emergency Health Alerts.</p>
+                    <p class="small text-secondary mb-0">Critical QoS handling for IoT Emergency Health Alerts.</p>
                 </div>
             </div>
         </a>
@@ -164,10 +154,10 @@
     <div class="col-md-6 mb-3">
         <a href="/real-world/auto" class="card-link">
             <div class="d-flex align-items-center p-3 feature-card">
-                <div class="display-6 me-3">🚗</div>
+                <div class="h3 me-3 text-secondary"><i class="bi bi-car-front"></i></div>
                 <div>
                     <h5 class="fw-bold text-light mb-1">Autonomous Vehicle OS</h5>
-                    <p class="small text-muted mb-0">Real-time switching for Lidar Obstacle Detection.</p>
+                    <p class="small text-secondary mb-0">Real-time switching for Lidar Obstacle Detection.</p>
                 </div>
             </div>
         </a>
@@ -176,17 +166,17 @@
     <div class="col-md-6 mb-3">
         <a href="/real-world/cloud" class="card-link">
             <div class="d-flex align-items-center p-3 feature-card">
-                <div class="display-6 me-3">☁️</div>
+                <div class="h3 me-3 text-secondary"><i class="bi bi-cloud"></i></div>
                 <div>
                     <h5 class="fw-bold text-light mb-1">Serverless Cloud Functions</h5>
-                    <p class="small text-muted mb-0">Solving the "Cold Start" problem in AWS Lambda/Azure.</p>
+                    <p class="small text-secondary mb-0">Solving the "Cold Start" problem in AWS Lambda/Azure.</p>
                 </div>
             </div>
         </a>
     </div>
 </div>
 
-<footer class="text-center text-muted small py-4 border-top border-secondary">
+<footer class="text-center text-secondary small py-4 border-top border-secondary">
     © 2025 WDS Scheduler Project | Designed for OS Efficiency Research
 </footer>
 {% endblock %}

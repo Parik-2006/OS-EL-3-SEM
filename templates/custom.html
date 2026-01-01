@@ -8,55 +8,54 @@
     body { font-family: 'Poppins', sans-serif; }
     .mono { font-family: 'Roboto Mono', monospace; }
     
-    /* Queue Visual Styles */
-    .queue-step { display: flex; align-items: center; background: #2c3e50; border: 1px solid #444; margin-bottom: 8px; padding: 5px 10px; border-radius: 6px; font-size: 0.85rem; }
-    .time-badge { background: #f39c12; color: #000; font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-right: 15px; width: 80px; text-align: center; }
-    .cpu-box { background: #27ae60; color: white; border: 1px solid #2ecc71; padding: 3px 10px; border-radius: 4px; font-weight: bold; margin-right: 20px; box-shadow: 0 0 5px rgba(46, 204, 113, 0.5); }
-    .queue-box { background: #34495e; color: #bdc3c7; border: 1px dashed #7f8c8d; padding: 2px 8px; border-radius: 4px; margin-right: 5px; }
-    .arrow-icon { color: #7f8c8d; margin-right: 10px; }
-
-    /* Add this inside the <style> tag in custom.html */
+    .queue-step { display: flex; align-items: center; background: #1e1e1e; border: 1px solid #333; margin-bottom: 8px; padding: 5px 10px; border-radius: 6px; font-size: 0.85rem; }
+    .time-badge { background: #ffc107; color: #000; font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-right: 15px; width: 80px; text-align: center; }
+    .cpu-box { background: #198754; color: white; border: 1px solid #146c43; padding: 3px 10px; border-radius: 4px; font-weight: bold; margin-right: 20px; }
+    .queue-box { background: #343a40; color: #ced4da; border: 1px dashed #495057; padding: 2px 8px; border-radius: 4px; margin-right: 5px; }
+    
     .system-msg {
-        background: #0f3460; /* Deep Blue Background */
-        border-left: 4px solid #00d2ff; /* Neon Blue Accent */
-        color: #e0f7fa;
+        background: #0d2a4e; 
+        border-left: 3px solid #0dcaf0; 
+        color: #d1e7dd;
         padding: 8px 12px;
         margin-bottom: 10px;
         border-radius: 4px;
         font-family: 'Roboto Mono', monospace;
         font-size: 0.85rem;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
 </style>
 
 <div class="text-center mb-4">
-    <h2 class="fw-bold text-warning">✍ Custom Workload Designer</h2>
+    <h3 class="fw-bold text-warning">Custom Workload Designer</h3>
     <p class="lead text-light">Design your own operating system scenario and test WDS against it.</p>
 </div>
 
 <div class="row">
     <div class="col-md-5">
         
-        <div class="card bg-dark border-light shadow mb-3">
+        <div class="card bg-dark border-secondary shadow mb-3">
             <div class="card-header bg-primary text-white fw-bold">
-                🛠️ Configure Process
+                Configure Process
             </div>
             <div class="card-body">
                 <form id="addProcForm" class="row g-2">
                     <div class="col-4">
                         <label class="small text-info fw-bold">Arrival Time</label>
-                        <input type="number" id="at" class="form-control form-control-sm" value="0" min="0">
+                        <input type="number" id="at" class="form-control form-control-sm bg-dark text-white border-secondary" value="0" min="0">
                     </div>
                     <div class="col-4">
                         <label class="small text-warning fw-bold">Burst Time</label>
-                        <input type="number" id="bt" class="form-control form-control-sm" value="5" min="1">
+                        <input type="number" id="bt" class="form-control form-control-sm bg-dark text-white border-secondary" value="5" min="1">
                     </div>
                     <div class="col-4">
                         <label class="small text-danger fw-bold">Priority (1-10)</label>
-                        <input type="number" id="prio" class="form-control form-control-sm" value="1" min="1" max="10">
+                        <input type="number" id="prio" class="form-control form-control-sm bg-dark text-white border-secondary" value="1" min="1" max="10">
+                        <div class="form-text text-light" style="font-size: 0.7rem; font-weight: bold; margin-top: 2px; opacity: 0.8;">
+                            Higher No. = Higher Urgency
+                        </div>
                     </div>
                     <div class="col-12 mt-3">
-                        <button type="submit" class="btn btn-success w-100 fw-bold shadow">+ Add to Queue</button>
+                        <button type="submit" class="btn btn-success w-100 fw-bold shadow">Add to Queue</button>
                     </div>
                 </form>
             </div>
@@ -64,29 +63,29 @@
 
         <div class="card bg-secondary text-white shadow mb-3 border-secondary">
             <div class="card-header py-1 fw-bold d-flex justify-content-between align-items-center">
-                <span>📋 Staging Area</span>
+                <span>Staging Area</span>
                 <button onclick="clearList()" class="btn btn-sm btn-danger py-0" style="font-size: 0.7rem;">Clear All</button>
             </div>
             <div class="card-body p-0" style="max-height: 150px; overflow-y: auto;">
                 <table class="table table-dark table-sm table-striped mb-0 text-center small">
                     <thead><tr><th>PID</th><th>AT</th><th>BT</th><th>Prio</th></tr></thead>
                     <tbody id="inputTableBody">
-                        <tr><td colspan="4" class="text-muted">No processes added yet.</td></tr>
+                        <tr><td colspan="4" class="text-secondary">No processes added yet.</td></tr>
                     </tbody>
                 </table>
             </div>
             <div class="p-2">
-                <button onclick="runSimulation()" class="btn btn-warning w-100 fw-bold text-dark shadow">⚡ RUN SIMULATION ⚡</button>
+                <button onclick="runSimulation()" class="btn btn-warning w-100 fw-bold text-dark shadow">RUN SIMULATION</button>
             </div>
         </div>
 
-        <div class="card bg-dark border-light shadow mb-3">
+        <div class="card bg-dark border-secondary shadow mb-3">
             <div class="card-header bg-success text-white fw-bold">
-                ⚔️ Battle Log: WDS vs Standard Algos
+                Scheduler Decision Log
             </div>
-            <div class="card-body p-0" id="decisionLogContainer" style="max-height: 500px; overflow-y: auto; background: #222;">
+            <div class="card-body p-0" id="decisionLogContainer" style="max-height: 500px; overflow-y: auto; background: #1a1a1a;">
                 <div class="text-center text-muted py-5">
-                    Add processes and click Run to see the fight...
+                    Add processes and click Run...
                 </div>
             </div>
         </div>
@@ -94,8 +93,8 @@
 
     <div class="col-md-7">
         
-        <div class="card bg-dark border-light shadow mb-3">
-            <div class="card-header fw-bold text-white small">⏱️ Real-Time Execution Timeline</div>
+        <div class="card bg-dark border-secondary shadow mb-3">
+            <div class="card-header fw-bold text-white small">Real-Time Execution Timeline</div>
             <div class="card-body p-2">
                 <div id="ganttChart" class="d-flex align-items-center" style="height: 50px; background: #222; border-radius: 5px; overflow: hidden;"></div>
                 <div class="d-flex justify-content-between text-muted small px-1 mt-1"><span>0s</span><span id="totalTimeLabel">?</span></div>
@@ -104,21 +103,21 @@
 
         <div class="row mb-3">
             <div class="col-md-6">
-                <div class="card bg-dark border-light shadow h-100">
-                    <div class="card-header fw-bold text-white small">📊 Efficiency Analysis (TAT)</div>
+                <div class="card bg-dark border-secondary shadow h-100">
+                    <div class="card-header fw-bold text-white small">Efficiency Analysis (TAT)</div>
                     <div class="card-body p-1"><canvas id="metricChart" height="150"></canvas></div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="card bg-dark border-light shadow h-100">
-                    <div class="card-header fw-bold text-white small">⚖️ Fairness Audit (Wait Time)</div>
+                <div class="card bg-dark border-secondary shadow h-100">
+                    <div class="card-header fw-bold text-white small">Fairness Audit (Wait Time)</div>
                     <div class="card-body p-1"><canvas id="fairnessChart" height="150"></canvas></div>
                 </div>
             </div>
         </div>
 
-        <div class="card bg-dark border-light shadow mb-3">
-            <div class="card-header fw-bold text-white small">📉 Numerical Results Database</div>
+        <div class="card bg-dark border-secondary shadow mb-3">
+            <div class="card-header fw-bold text-white small">Numerical Results Database</div>
             <div class="table-responsive">
                 <table class="table table-dark table-sm mb-0 text-center small">
                     <thead><tr><th>PID</th><th>AT</th><th>BT</th><th>Prio</th><th class="text-warning">TAT</th><th class="text-info">WT</th></tr></thead>
@@ -127,9 +126,9 @@
             </div>
         </div>
 
-        <div class="card bg-dark border-light shadow">
+        <div class="card bg-dark border-secondary shadow">
             <div class="card-header fw-bold text-white small bg-darker border-bottom border-secondary">
-                🚦 Visual Ready Queue (Step-by-Step)
+                Visual Ready Queue
             </div>
             <div class="card-body p-2 bg-darker" id="queueContainer" style="max-height: 250px; overflow-y: auto;">
                 <div class="text-center text-muted small py-2">Simulation waiting...</div>
@@ -140,7 +139,6 @@
 </div>
 
 <script>
-    // --- INPUT HANDLING ---
     let processList = [];
 
     document.getElementById('addProcForm').addEventListener('submit', function(e) {
@@ -163,7 +161,7 @@
     function renderInputList() {
         let tbody = document.getElementById('inputTableBody');
         if(processList.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" class="text-muted">No processes added yet.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" class="text-secondary">No processes added yet.</td></tr>';
             return;
         }
         tbody.innerHTML = processList.map(p => `
@@ -188,7 +186,6 @@
         .then(data => {
             if(!data.decision_log) { alert("Error: Backend issue."); return; }
             
-            // Render All Components
             updateTable(data.details.wds);
             renderGantt(data.timeline_wds);
             renderMetrics(data.metrics);
@@ -199,15 +196,11 @@
         .catch(err => alert("Server Error. Check console."));
     }
 
-    // --- VISUALIZATION ENGINES (Reused from Demo) ---
-
-    // 1. VS BATTLE LOGIC (UPDATED WITH SYSTEM MESSAGES)
     function renderDecisionLog(logs) {
         let container = document.getElementById('decisionLogContainer');
         container.innerHTML = "";
         
         logs.forEach(step => {
-            // --- 1. RENDER SYSTEM MESSAGES (CONTEXT SWITCHES) ---
             let systemMsgHTML = "";
             if (step.system_msg && step.system_msg.length > 0) {
                 step.system_msg.forEach(msg => {
@@ -215,35 +208,34 @@
                 });
             }
 
-            // --- 2. RENDER DECISION LOGIC ---
             let wdsWinner = step.candidates.find(c => c.pid === step.winner_pid);
             let fcfsWinner = step.candidates.reduce((p, c) => (c.wait > p.wait ? c : p)); 
             let sjfWinner = step.candidates.reduce((p, c) => (c.bt < p.bt ? c : p));     
 
-            let badge = `<span class="badge bg-secondary">✅ Standard</span>`;
+            let badge = `<span class="badge bg-secondary">Standard</span>`;
             let description = `Everyone agrees on <strong>P${wdsWinner.pid}</strong>.`;
             let vsHTML = `<div class="d-flex justify-content-center align-items-center text-success fw-bold p-2 bg-dark rounded"><span>P${wdsWinner.pid} is the best choice.</span></div>`;
 
             if (wdsWinner.pid !== fcfsWinner.pid && wdsWinner.pid === sjfWinner.pid) {
-                badge = `<span class="badge bg-info">🚀 Speed</span>`;
+                badge = `<span class="badge bg-info">Speed</span>`;
                 description = `FCFS wanted slow job P${fcfsWinner.pid}. <strong>WDS picked fast job P${wdsWinner.pid}</strong>.`;
-                vsHTML = `<div class="d-flex justify-content-between align-items-center bg-darker p-2 rounded border border-secondary"><div class="text-center text-muted" style="width:45%;"><small>FCFS</small><br><strong class="text-danger">P${fcfsWinner.pid}</strong></div><div class="text-warning fw-bold">VS</div><div class="text-center" style="width:45%;"><small class="text-success">WDS</small><br><strong class="text-success">P${wdsWinner.pid}</strong></div></div>`;
+                vsHTML = `<div class="d-flex justify-content-between align-items-center bg-darker p-2 rounded border border-secondary"><div class="text-center text-muted" style="width:45%;"><small>FCFS</small><br><strong class="text-danger">P${fcfsWinner.pid}</strong></div><div class="text-light fw-bold">VS</div><div class="text-center" style="width:45%;"><small class="text-success">WDS</small><br><strong class="text-success">P${wdsWinner.pid}</strong></div></div>`;
             } 
             else if (wdsWinner.pid !== sjfWinner.pid && wdsWinner.pid === fcfsWinner.pid) {
-                badge = `<span class="badge bg-warning text-dark">⚖️ Fairness</span>`;
+                badge = `<span class="badge bg-warning text-dark">Fairness</span>`;
                 description = `SJF wanted new job P${sjfWinner.pid}. <strong>WDS picked waiting job P${wdsWinner.pid}</strong>.`;
-                vsHTML = `<div class="d-flex justify-content-between align-items-center bg-darker p-2 rounded border border-secondary"><div class="text-center text-muted" style="width:45%;"><small>SJF</small><br><strong class="text-danger">P${sjfWinner.pid}</strong></div><div class="text-warning fw-bold">VS</div><div class="text-center" style="width:45%;"><small class="text-success">WDS</small><br><strong class="text-success">P${wdsWinner.pid}</strong></div></div>`;
+                vsHTML = `<div class="d-flex justify-content-between align-items-center bg-darker p-2 rounded border border-secondary"><div class="text-center text-muted" style="width:45%;"><small>SJF</small><br><strong class="text-danger">P${sjfWinner.pid}</strong></div><div class="text-light fw-bold">VS</div><div class="text-center" style="width:45%;"><small class="text-success">WDS</small><br><strong class="text-success">P${wdsWinner.pid}</strong></div></div>`;
             }
             else if (wdsWinner.pid !== fcfsWinner.pid && wdsWinner.pid !== sjfWinner.pid) {
-                badge = `<span class="badge bg-danger">⭐ Priority</span>`;
+                badge = `<span class="badge bg-danger">Priority</span>`;
                 description = `WDS recognized <strong>P${wdsWinner.pid}</strong> has Critical Priority.`;
-                vsHTML = `<div class="d-flex justify-content-between align-items-center bg-darker p-2 rounded border border-secondary"><div class="text-center text-muted" style="width:45%;"><small>Standard</small><br><strong class="text-danger">P${sjfWinner.pid}</strong></div><div class="text-warning fw-bold">VS</div><div class="text-center" style="width:45%;"><small class="text-success">WDS</small><br><strong class="text-success">P${wdsWinner.pid}</strong></div></div>`;
+                vsHTML = `<div class="d-flex justify-content-between align-items-center bg-darker p-2 rounded border border-secondary"><div class="text-center text-muted" style="width:45%;"><small>Standard</small><br><strong class="text-danger">P${sjfWinner.pid}</strong></div><div class="text-light fw-bold">VS</div><div class="text-center" style="width:45%;"><small class="text-success">WDS</small><br><strong class="text-success">P${wdsWinner.pid}</strong></div></div>`;
             }
 
             container.innerHTML += `
                 <div class="p-3 mb-3 bg-dark border border-secondary rounded shadow-sm">
                     <div class="d-flex justify-content-between mb-2">
-                        <span class="text-warning fw-bold small">⏱ Time: ${step.time}s</span>
+                        <span class="text-warning fw-bold small">Time: ${step.time}s</span>
                         ${badge}
                     </div>
                     ${systemMsgHTML} ${vsHTML}
@@ -252,25 +244,22 @@
         });
     }
 
-    // 2. QUEUE VISUAL
     function renderQueueVisual(logs) {
         let container = document.getElementById('queueContainer');
         container.innerHTML = "";
         logs.forEach(step => {
             let waiting = step.candidates.filter(c => c.pid !== step.winner_pid);
             let waitingHTML = waiting.length === 0 ? "<span class='text-muted small'>Empty</span>" : waiting.map(c => `<span class='queue-box'>P${c.pid}</span>`).join("");
-            container.innerHTML += `<div class="queue-step"><div class="time-badge">Time: ${step.time}s</div><div class="d-flex align-items-center flex-grow-1"><div class="d-flex flex-column align-items-center me-3"><span style="font-size:0.6rem; color:#aaa;">CPU</span><span class="cpu-box">P${step.winner_pid}</span></div><span class="arrow-icon">⬅</span><div class="d-flex flex-column"><span style="font-size:0.6rem; color:#aaa;">READY</span><div>${waitingHTML}</div></div></div></div>`;
+            container.innerHTML += `<div class="queue-step"><div class="time-badge">Time: ${step.time}s</div><div class="d-flex align-items-center flex-grow-1"><div class="d-flex flex-column align-items-center me-3"><span style="font-size:0.6rem; color:#aaa;">CPU</span><span class="cpu-box">P${step.winner_pid}</span></div><span class="text-secondary mx-2">&larr;</span><div class="d-flex flex-column"><span style="font-size:0.6rem; color:#aaa;">READY</span><div>${waitingHTML}</div></div></div></div>`;
         });
     }
 
-    // 3. STANDARD VISUALS
     function updateTable(procs) { document.getElementById('detailsTable').innerHTML = procs.sort((a,b)=>a.pid-b.pid).map(p=>`<tr><td>P${p.pid}</td><td>${p.at}</td><td>${p.bt}</td><td>${p.prio}</td><td class="text-warning">${p.tat}</td><td class="text-info">${p.wait}</td></tr>`).join(''); }
     function renderGantt(tl) { 
         let end=tl[tl.length-1].start+tl[tl.length-1].duration; document.getElementById('totalTimeLabel').innerText=end+'s';
         document.getElementById('ganttChart').innerHTML = tl.map(t=>`<div style="width:${(t.duration/end)*100}%; background:${t.pid===1?'#e74c3c':(t.pid%2?'#3498db':'#f1c40f')}; height:100%; display:flex; justify-content:center; align-items:center; color:#fff; border-right:1px solid #222; font-size:0.8em;">P${t.pid}</div>`).join(''); 
     }
     
-    // 4. CHART.JS CHARTS
     let mChart, fChart;
     function renderMetrics(m) {
         if(mChart) mChart.destroy(); 

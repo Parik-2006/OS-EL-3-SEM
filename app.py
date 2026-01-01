@@ -32,44 +32,40 @@ def demo():
 def custom():
     return render_template('custom.html')
 
-# --- NEW: DOCUMENTATION ROUTE ---
 @app.route('/docs')
 def docs():
     return render_template('readme.html')
 
 # --- REAL-WORLD SCENARIOS DATABASE ---
+# REMOVED: Icons and Emojis
 scenarios_db = {
     'ai': {
         'title': 'AI Model Training Clusters',
-        'icon': '🤖',
-        'problem': 'Deep Learning models train in massive "Epochs" (hours long). Standard schedulers (FCFS) lock the GPU for the entire epoch. If a short "Checkpoint Save" (10s) arrives, it gets blocked.',
-        'solution': 'WDS uses <b>Cooperative Multitasking</b>. The training process yields control after every "Batch". WDS sees the "Checkpoint Save" has a high Efficiency Score and swaps it in immediately.',
+        'problem': 'Deep Learning models train in massive "Epochs" (hours long). Standard schedulers (FCFS) lock the GPU for the entire epoch. If a short "Checkpoint Save" (10s) arrives, it gets blocked, risking data loss.',
+        'solution': 'WDS uses Cooperative Multitasking. The training process yields control after every "Batch". WDS sees the "Checkpoint Save" has a high Efficiency Score and swaps it in immediately.',
         'stats': {'labels': ['Checkpoint Lag (FCFS)', 'Checkpoint Lag (WDS)'], 'data': [120, 5]}, 
-        'refs': [{'title': 'Optimizing Checkpointing', 'source': 'arXiv', 'url': '#'}]
+        'refs': [{'title': 'Optimizing Checkpointing in Deep Learning (arXiv)', 'source': 'Cornell University (arXiv)', 'url': 'https://arxiv.org/abs/2011.01340'}]
     },
     '5g': {
         'title': '5G/6G Edge Gateways',
-        'icon': '📡',
-        'problem': 'Edge routers process mixed traffic. A 4K Netflix stream blocks a tiny "Heart Attack Alert" packet for 200ms—fatal in remote surgery.',
-        'solution': 'WDS implements <b>Packet-Level Yielding</b>. The Health Alert (Priority 10) overrides the video stream immediately, ensuring < 10ms latency.',
+        'problem': 'Edge routers process mixed traffic. A 4K Netflix stream (High Bandwidth) blocks a tiny "Heart Attack Alert" packet (Low Latency) for 200ms—fatal in remote surgery.',
+        'solution': 'WDS implements Packet-Level Yielding. The Health Alert (Priority 10) overrides the video stream immediately, ensuring < 10ms latency.',
         'stats': {'labels': ['Emergency Latency (FCFS)', 'Emergency Latency (WDS)'], 'data': [450, 12]},
-        'refs': [{'title': 'URLLC in 5G', 'source': 'IEEE Xplore', 'url': '#'}]
+        'refs': [{'title': 'Scheduling for 5G URLLC Traffic', 'source': 'IEEE Xplore', 'url': 'https://ieeexplore.ieee.org/document/8647610'}]
     },
     'auto': {
         'title': 'Autonomous Vehicle OS',
-        'icon': '🚗',
         'problem': 'A "Map Download" (Long Task) blocks "Lidar Obstacle Detection" (Critical Task). A 300ms delay at 60mph means the car travels 8 meters blind.',
-        'solution': 'WDS uses <b>Yield Points</b>. It pauses the Map Download to ask: <i>"Is anything urgent waiting?"</i>. WDS forces the Lidar task to run instantly.',
+        'solution': 'WDS uses Yield Points. It pauses the Map Download to ask: "Is anything urgent waiting?". WDS forces the Lidar task to run instantly.',
         'stats': {'labels': ['Braking Reaction (Standard)', 'Braking Reaction (WDS)'], 'data': [300, 45]},
-        'refs': [{'title': 'Real-Time Scheduling in AUTOSAR', 'source': 'SAE International', 'url': '#'}]
+        'refs': [{'title': 'Mixed Criticality Scheduling in Automotive', 'source': 'ResearchGate', 'url': 'https://www.researchgate.net/publication/322657731_Scheduling_of_Mixed-Criticality_Applications_in_Real-Time_Systems'}]
     },
     'cloud': {
         'title': 'Serverless Cloud Functions',
-        'icon': '☁️',
-        'problem': 'In AWS Lambda, "Cold Starts" hang a user\'s "Login Request" if the server is busy compiling a background job.',
-        'solution': 'WDS utilizes the <b>Aging Factor</b>. As the Login Request waits, its score grows. WDS injects it next, preventing UI freeze.',
+        'problem': 'In AWS Lambda, "Cold Starts" hang a user\'s "Login Request" if the server is busy compiling a background job. This kills user retention.',
+        'solution': 'WDS utilizes the Aging Factor. As the Login Request waits, its score grows. WDS injects it next, preventing UI freeze.',
         'stats': {'labels': ['Cold Start Delay (FIFO)', 'Cold Start Delay (WDS)'], 'data': [2500, 300]}, 
-        'refs': [{'title': 'Mitigating Cold Starts', 'source': 'USENIX', 'url': '#'}]
+        'refs': [{'title': 'Peeking Behind the Curtains of Serverless', 'source': 'USENIX ATC', 'url': 'https://www.usenix.org/conference/atc18/presentation/wang-liang'}]
     }
 }
 
@@ -90,36 +86,28 @@ def simulate():
         p['start_time'] = -1
         p['finish_time'] = -1
 
-    # SIMULATION VARIABLES
     current_time = 0
     completed = 0
     n = len(processes)
     timeline_wds = []
-    
-    # "VS Battle" Decision Logs
     decision_log = []
 
-    # COPY LISTS FOR COMPARISON
     procs_fcfs = copy.deepcopy(processes)
     procs_sjf = copy.deepcopy(processes)
 
-    # --- 1. RUN WDS SIMULATION ---
     wds_processes = copy.deepcopy(processes)
     wds_processes.sort(key=lambda x: x['at'])
     active_procs = [p for p in wds_processes]
     
-    # TRACK PREVIOUS PROCESS (For Context Switch Logic)
     last_process_id = None 
 
     while completed < n:
-        # Move arrived processes to Ready Queue
         available = [p for p in active_procs if p['at'] <= current_time and p['rem_bt'] > 0]
         
         if not available:
             current_time += 1
             continue
 
-        # --- DECISION MOMENT ---
         candidates = []
         for p in available:
             score = calculate_wds_score(p, current_time)
@@ -131,32 +119,25 @@ def simulate():
                 'prio': p['prio']
             })
 
-        # Pick Winner
         winner_info = max(candidates, key=lambda x: x['final_score'])
         winner = next(p for p in available if p['pid'] == winner_info['pid'])
 
-        # --- CONTEXT SWITCH LOGIC (INTEGRATED) ---
+        # --- CONTEXT SWITCH LOGIC (CLEAN TEXT) ---
         system_msgs = []
         if winner['pid'] != last_process_id:
-            # If there was a previous process, save its state
             if last_process_id is not None:
-                system_msgs.append(f"💾 SYSTEM: Saving State for Process {last_process_id}...")
+                system_msgs.append(f"SYSTEM: Saving State for Process {last_process_id}...")
             
-            # Load the new process
-            system_msgs.append(f"🚀 SYSTEM: Loading State for Process {winner['pid']}...")
-            
-            # Update tracker
+            system_msgs.append(f"SYSTEM: Loading State for Process {winner['pid']}...")
             last_process_id = winner['pid']
 
-        # LOG THE DECISION
         decision_log.append({
             'time': current_time,
             'winner_pid': winner['pid'],
             'candidates': candidates,
-            'system_msg': system_msgs  # <--- Sent to Frontend
+            'system_msg': system_msgs
         })
 
-        # EXECUTE PROCESS (Non-Preemptive chunk)
         start = current_time
         duration = winner['bt']
         current_time += duration
@@ -168,7 +149,6 @@ def simulate():
         timeline_wds.append({'pid': winner['pid'], 'start': start, 'duration': duration})
         completed += 1
 
-    # --- 2. METRICS (FCFS & SJF) ---
     def calc_fcfs(procs):
         procs.sort(key=lambda x: x['at'])
         time = 0; total_tat = 0
