@@ -111,7 +111,7 @@
                 <div class="d-flex justify-content-between text-muted small px-1 mt-1"><span>0s</span><span id="totalTimeLabel">?</span></div>
             </div>
         </div>
-        
+
         <div class="row mb-3">
             <div class="col-md-6">
                 <div class="card bg-dark border-secondary shadow h-100">
@@ -186,13 +186,15 @@
 
         logs.forEach(step => {
             let winner = step.winner_pid;
+            let winnerInfo = step.candidates.find(c => c.pid === winner);
+            let winnerScore = winnerInfo ? winnerInfo.final_score : "-";
             let waiting = step.candidates.filter(c => c.pid !== winner);
             
             let waitingHTML = "";
             if (waiting.length === 0) {
                 waitingHTML = "<span class='text-muted small'>Empty</span>";
             } else {
-                waitingHTML = waiting.map(c => `<span class='queue-box'>P${c.pid}</span>`).join("");
+                waitingHTML = waiting.map(c => `<span class='queue-box'>P${c.pid} <span class='text-warning'>(${c.final_score})</span></span>`).join("");
             }
 
             container.innerHTML += `
@@ -201,7 +203,7 @@
                     <div class="d-flex align-items-center flex-grow-1">
                         <div class="d-flex flex-column align-items-center me-3">
                             <span style="font-size:0.6rem; color:#aaa; margin-bottom:-2px;">IN CPU</span>
-                            <span class="cpu-box">P${winner}</span>
+                            <span class="cpu-box">P${winner} <span class="text-warning">(${winnerScore})</span></span>
                         </div>
                         <span class="text-secondary mx-2">&larr;</span>
                         <div class="d-flex flex-column">
@@ -310,5 +312,6 @@
             }
         });
     }
+
 </script>
 {% endblock %}
