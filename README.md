@@ -103,7 +103,7 @@ This project was developed as part of the **Operating Systems (OS-EL)** curricul
 
 ### 📄 License
 
-This project is for educational research purposes.
+This project is for educational research purposes - RVCE CS 2025
 
 ## 🤝 Contributing & Issues
 
