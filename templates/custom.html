@@ -248,9 +248,11 @@
         let container = document.getElementById('queueContainer');
         container.innerHTML = "";
         logs.forEach(step => {
+            let winnerInfo = step.candidates.find(c => c.pid === step.winner_pid);
+            let winnerScore = winnerInfo ? winnerInfo.final_score : "-";
             let waiting = step.candidates.filter(c => c.pid !== step.winner_pid);
-            let waitingHTML = waiting.length === 0 ? "<span class='text-muted small'>Empty</span>" : waiting.map(c => `<span class='queue-box'>P${c.pid}</span>`).join("");
-            container.innerHTML += `<div class="queue-step"><div class="time-badge">Time: ${step.time}s</div><div class="d-flex align-items-center flex-grow-1"><div class="d-flex flex-column align-items-center me-3"><span style="font-size:0.6rem; color:#aaa;">CPU</span><span class="cpu-box">P${step.winner_pid}</span></div><span class="text-secondary mx-2">&larr;</span><div class="d-flex flex-column"><span style="font-size:0.6rem; color:#aaa;">READY</span><div>${waitingHTML}</div></div></div></div>`;
+            let waitingHTML = waiting.length === 0 ? "<span class='text-muted small'>Empty</span>" : waiting.map(c => `<span class='queue-box'>P${c.pid} <span class='text-warning'>(${c.final_score})</span></span>`).join("");
+            container.innerHTML += `<div class="queue-step"><div class="time-badge">Time: ${step.time}s</div><div class="d-flex align-items-center flex-grow-1"><div class="d-flex flex-column align-items-center me-3"><span style="font-size:0.6rem; color:#aaa;">CPU</span><span class="cpu-box">P${step.winner_pid} <span class="text-warning">(${winnerScore})</span></span></div><span class="text-secondary mx-2">&larr;</span><div class="d-flex flex-column"><span style="font-size:0.6rem; color:#aaa;">READY</span><div>${waitingHTML}</div></div></div></div>`;
         });
     }
 
@@ -312,5 +314,6 @@
             }
         });
     }
+
 </script>
 {% endblock %}
