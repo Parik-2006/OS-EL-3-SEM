@@ -1,4 +1,3 @@
-```markdown
 # ⚡ WDS Scheduling Engine (Weighted Dynamic Scoring)
 
 > **A Next-Generation Non-Preemptive CPU Scheduler.**
@@ -59,7 +58,7 @@ The diagram illustrates the end-to-end flow from user request to live simulation
 
 1.  **Clone the Repository**
     ```bash
-    git clone [https://github.com/your-username/wds-scheduler.git](https://github.com/your-username/wds-scheduler.git)
+    git clone https://github.com/your-username/wds-scheduler.git
     cd wds-scheduler
     ```
 
@@ -94,4 +93,3 @@ This project is open for viewing. **Direct changes are restricted.**
 
 * **Found a bug?** Please [Open a New Issue](https://github.com/YOUR-USERNAME/os-el2025/issues/new) and describe the problem.
 * **Want to fix it?** Please Fork the repo and submit a Pull Request (PR) for review.
-```
