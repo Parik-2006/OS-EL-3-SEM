@@ -1,3 +1,4 @@
+```markdown
 # ⚡ WDS Scheduling Engine (Weighted Dynamic Scoring)
 
 > **A Next-Generation Non-Preemptive CPU Scheduler.**
@@ -35,6 +36,14 @@ This project simulates WDS performance in four specific industries:
 | **📡 5G Edge** | 4K video streams block health alert packets. | **Packet Yielding:** Emergency packets get priority override. |
 | **🚗 Autonomous OS** | Map downloads block Lidar obstacle detection. | **Context Switch:** Lidar gets instant CPU access. |
 | **☁️ Cloud Functions** | Cold starts delay user login requests. | **Aging Factor:** Login requests gain score while waiting. |
+
+---
+
+## 📊 Complete Workflow Architecture
+
+![WDS Scheduler Pro - Complete Workflow Diagram](static/images/wds-workflow.png)
+
+The diagram illustrates the end-to-end flow from user request to live simulation dashboard, encompassing Flask routing, Jinja2 template processing, JavaScript interactivity, and backend algorithm execution with real-time metrics visualization.
 
 ---
 
@@ -85,3 +94,4 @@ This project is open for viewing. **Direct changes are restricted.**
 
 * **Found a bug?** Please [Open a New Issue](https://github.com/YOUR-USERNAME/os-el2025/issues/new) and describe the problem.
 * **Want to fix it?** Please Fork the repo and submit a Pull Request (PR) for review.
+```
